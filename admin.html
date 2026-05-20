@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Адмінка</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="index.html">Головна</a>
+            <a href="contacts.html">Контакти</a>
+            <a href="sign-in.html">Вхід</a>
+            <a href="dashboard.html">Журнал</a>
+            <a href="admin.html">Адмінка</a>
+        </nav>
+    </header>
+    <main>
+        <h1>Панель керування журналом (Адміністратор)</h1>
+        <p style="color: #10b981;">✅ Доступ дозволено! Режим редагування CRUD (Модульна архітектура).</p>
+        
+        <div style="background-color: #334155; padding: 20px; border-radius: 8px; margin-top: 20px;">
+            <h3>➕ Додати нову тему в журнал</h3>
+            <form id="add-topic-form">
+                <input type="text" id="new-title" placeholder="Назва теми / модуля" required>
+                <input type="text" id="new-desc" placeholder="Короткий опис модуля" required>
+                <input type="number" id="new-lessons" placeholder="Кількість занять" required>
+                <button type="submit">Зберегти тему</button>
+            </form>
+        </div>
+
+        <div style="margin-top: 30px;">
+            <h3>📋 Поточні теми в системі (Редагування/Видалення)</h3>
+            <ul id="admin-topics-list"></ul>
+        </div>
+
+        <div style="margin-top: 40px; border-top: 2px solid #334155; padding-top: 20px;">
+            <h3>📥 Повідомлення від користувачів (Зворотний зв'язок)</h3>
+            <div id="messages-list">Завантаження повідомлень...</div>
+        </div>
+    </main>
+
+    <script type="module" src="js/admin-gate.js"></script>
+</body>
+</html>

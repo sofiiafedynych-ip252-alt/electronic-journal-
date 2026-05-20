@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Контакти</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="index.html">Головна</a>
+            <a href="contacts.html">Контакти</a>
+            <a href="sign-in.html">Вхід</a>
+            <a href="dashboard.html">Журнал</a>
+            <a href="admin.html">Адмінка</a>
+        </nav>
+    </header>
+    <main>
+        <h1>Зворотний зв'язок</h1>
+        <p>Маєте запитання щодо виставлених балів чи навчальних модулів? Надішліть повідомлення адміністрації журналу:</p>
+        
+        <form id="feedback-form" style="max-width: 500px; margin-top: 20px;">
+            <label for="fb-name" style="color: #94a3b8; margin-bottom: 5px;">Ваше ім'я:</label>
+            <input type="text" id="fb-name" placeholder="Іван Іванов" required>
+
+            <label for="fb-email" style="color: #94a3b8; margin-bottom: 5px;">Ваш Email:</label>
+            <input type="email" id="fb-email" placeholder="student@domain.com" required>
+
+            <label for="fb-message" style="color: #94a3b8; margin-bottom: 5px;">Повідомлення:</label>
+            <textarea id="fb-message" placeholder="Опишіть ваше питання..." rows="5" style="background-color: #334155; border: 1px solid #475569; color: white; padding: 12px; margin-bottom: 15px; border-radius: 6px; font-family: inherit; font-size: 14px; resize: vertical;" required></textarea>
+
+            <button type="submit">Надіслати повідомлення</button>
+        </form>
+    </main>
+
+    <script src="js/contacts.js"></script>
+</body>
+</html>

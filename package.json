@@ -1,0 +1,22 @@
+{
+  "name": "electronic-journal",
+  "version": "1.0.0",
+  "description": "Електронний журнал оцінювання студентів",
+  "main": "js/main.js",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "lint": "eslint js/**/*.js",
+    "format": "prettier --write js/**/*.js *.html css/**/*.css"
+  },
+  "keywords": [],
+  "author": "Sofiia Fedynyc",
+  "license": "ISC",
+  "devDependencies": {
+    "eslint": "^9.0.0",
+    "prettier": "^3.0.0",
+    "vite": "^5.0.0"
+  }
+}

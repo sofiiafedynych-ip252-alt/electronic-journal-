@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Деталі модуля</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="index.html">Головна</a>
+            <a href="contacts.html">Контакти</a>
+            <a href="sign-in.html">Вхід</a>
+            <a href="dashboard.html">Журнал</a>
+            <a href="admin.html">Адмінка</a>
+        </nav>
+    </header>
+    <main>
+        <div id="detail-container">
+            <p style="color: #94a3b8;">Завантаження інформації про модуль...</p>
+        </div>
+
+        <div style="margin-top: 30px;">
+            <h3>📊 Успішність групи (Оцінки студентів)</h3>
+            <table style="width: 100%; border-collapse: collapse; margin-top: 15px; background-color: #334155; border-radius: 8px; overflow: hidden;">
+                <thead>
+                    <tr style="background-color: #1e293b; color: #38bdf8; text-align: left;">
+                        <th style="padding: 12px;">Студент</th>
+                        <th style="padding: 12px;">Лабораторні</th>
+                        <th style="padding: 12px;">Тести</th>
+                        <th style="padding: 12px;">Фінальний бал</th>
+                    </tr>
+                </thead>
+                <tbody id="grades-table-body">
+                    </tbody>
+            </table>
+        </div>
+        
+        <a href="dashboard.html" style="display: inline-block; margin-top: 25px; color: #38bdf8; text-decoration: none; font-weight: bold;">← Повернутися до журналу</a>
+    </main>
+
+    <script src="js/detail.js"></script>
+</body>
+</html>
