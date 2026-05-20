@@ -1,5 +1,3 @@
-import { TopicCard } from './components/TopicCard.js';
-
 document.addEventListener('DOMContentLoaded', () => {
     const topicsListContainer = document.getElementById('topics-list');
     const searchInput = document.getElementById('search-input');
@@ -8,7 +6,25 @@ document.addEventListener('DOMContentLoaded', () => {
     let allTopics = [];
     let isSortedAsc = true;
 
-    // Рендеринг за допомогою нашого компонента TopicCard
+    // Вбудована функція генерації картки (без імпорту)
+    function createTopicCardHTML(topic) {
+        return `
+            <div style="display: flex; justify-content: space-between; align-items: center; background: #1e293b; padding: 15px; border-radius: 8px; margin-bottom: 12px; border: 1px solid #334155;">
+                <div>
+                    <h3 style="margin: 0 0 5px 0;">
+                        <a href="topic-detail.html?id=${topic.id}" style="color: #38bdf8; text-decoration: none; font-weight: 600;">
+                            ${topic.title}
+                        </a>
+                    </h3>
+                    <p style="margin: 0; color: #94a3b8; font-size: 14px;">${topic.description}</p>
+                </div>
+                <span style="background-color: #0f172a; color: #38bdf8; padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: bold; border: 1px solid #38bdf8;">
+                    ${topic.lessons} занять
+                </span>
+            </div>
+        `;
+    }
+
     function renderTopics(topicsToRender) {
         if (!topicsListContainer) return;
         topicsListContainer.innerHTML = '';
@@ -18,36 +34,33 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // Сучасний мапінг масиву в HTML-компоненти
-        const htmlContent = topicsToRender.map(topic => TopicCard(topic)).join('');
+        const htmlContent = topicsToRender.map(topic => createTopicCardHTML(topic)).join('');
         topicsListContainer.innerHTML = htmlContent;
     }
 
-    // Автономне завантаження локальної бази даних
     async function initDashboard() {
-        // Перевіряємо localStorage або завантажуємо початковий JSON
-        const localTopics = localStorage.getItem('journal-topics');
+        // Очищаємо localStorage, щоб примусово скинути старі забаговані шляхи
+        localStorage.removeItem('journal-topics');
         
-        if (localTopics && JSON.parse(localTopics).length > 0) {
-            allTopics = JSON.parse(localTopics);
+        try {
+            // Пробуємо стандартний відносний шлях
+            let response = await fetch('./public/data/topics.json');
+            if (!response.ok) {
+                // Якщо Vite підняв public як корінь, пробуємо альтернативний шлях
+                response = await fetch('/data/topics.json');
+            }
+            
+            allTopics = await response.json();
+            localStorage.setItem('journal-topics', JSON.stringify(allTopics));
             renderTopics(allTopics);
-        } else {
-            try {
-                // Використовуємо відносний шлях для Vite, щоб працювало всюди
-                const response = await fetch('./public/data/topics.json');
-                allTopics = await response.json();
-                localStorage.setItem('journal-topics', JSON.stringify(allTopics));
-                renderTopics(allTopics);
-            } catch (error) {
-                console.error("Помилка завантаження файлу тем:", error);
-                if (topicsListContainer) {
-                    topicsListContainer.innerHTML = `<div style="color: #ef4444; text-align: center; padding: 20px;">Помилка завантаження каталогу тем.</div>`;
-                }
+        } catch (error) {
+            console.error("Помилка завантаження файлу тем:", error);
+            if (topicsListContainer) {
+                topicsListContainer.innerHTML = `<div style="color: #ef4444; text-align: center; padding: 20px;">Помилка завантаження каталогу тем.</div>`;
             }
         }
     }
 
-    // Пошук
     if (searchInput) {
         searchInput.addEventListener('input', (e) => {
             const text = e.target.value.toLowerCase();
@@ -59,7 +72,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Сортування
     if (sortBtn) {
         sortBtn.addEventListener('click', () => {
             isSortedAsc = !isSortedAsc;
