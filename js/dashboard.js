@@ -1,5 +1,4 @@
-import { fetchTopicsFromDB } from './supabase.js';
-import { TopicCard } from './components/TopicCard.js'; // Імпортуємо наш новий компонент!
+import { TopicCard } from './components/TopicCard.js';
 
 document.addEventListener('DOMContentLoaded', () => {
     const topicsListContainer = document.getElementById('topics-list');
@@ -9,7 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let allTopics = [];
     let isSortedAsc = true;
 
-    // Революційно чистий рендеринг через компоненти
+    // Рендеринг за допомогою нашого компонента TopicCard
     function renderTopics(topicsToRender) {
         if (!topicsListContainer) return;
         topicsListContainer.innerHTML = '';
@@ -19,49 +18,48 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // Збираємо всі картки разом за допомогою нашого компонента
+        // Сучасний мапінг масиву в HTML-компоненти
         const htmlContent = topicsToRender.map(topic => TopicCard(topic)).join('');
         topicsListContainer.innerHTML = htmlContent;
     }
 
+    // Автономне завантаження локальної бази даних
     async function initDashboard() {
-        if (topicsListContainer) {
-            topicsListContainer.innerHTML = `<div style="color: #38bdf8; text-align: center; padding: 20px;">Синхронізація з хмарою...</div>`;
-        }
-
-        const dbTopics = await fetchTopicsFromDB();
-
-        if (dbTopics && dbTopics.length > 0) {
-            allTopics = dbTopics;
-            localStorage.setItem('journal-topics', JSON.stringify(allTopics));
+        // Перевіряємо localStorage або завантажуємо початковий JSON
+        const localTopics = localStorage.getItem('journal-topics');
+        
+        if (localTopics && JSON.parse(localTopics).length > 0) {
+            allTopics = JSON.parse(localTopics);
             renderTopics(allTopics);
         } else {
-            const localTopics = localStorage.getItem('journal-topics');
-            if (localTopics) {
-                allTopics = JSON.parse(localTopics);
+            try {
+                // Використовуємо відносний шлях для Vite, щоб працювало всюди
+                const response = await fetch('./public/data/topics.json');
+                allTopics = await response.json();
+                localStorage.setItem('journal-topics', JSON.stringify(allTopics));
                 renderTopics(allTopics);
-            } else {
-                try {
-                    const response = await fetch('public/data/topics.json');
-                    allTopics = await response.json();
-                    localStorage.setItem('journal-topics', JSON.stringify(allTopics));
-                    renderTopics(allTopics);
-                } catch (error) {
-                    console.error(error);
-                    if (topicsListContainer) topicsListContainer.innerHTML = `<div>Помилка завантаження даних</div>`;
+            } catch (error) {
+                console.error("Помилка завантаження файлу тем:", error);
+                if (topicsListContainer) {
+                    topicsListContainer.innerHTML = `<div style="color: #ef4444; text-align: center; padding: 20px;">Помилка завантаження каталогу тем.</div>`;
                 }
             }
         }
     }
 
+    // Пошук
     if (searchInput) {
         searchInput.addEventListener('input', (e) => {
             const text = e.target.value.toLowerCase();
-            const filtered = allTopics.filter(t => t.title.toLowerCase().includes(text) || t.description.toLowerCase().includes(text));
+            const filtered = allTopics.filter(t => 
+                t.title.toLowerCase().includes(text) || 
+                t.description.toLowerCase().includes(text)
+            );
             renderTopics(filtered);
         });
     }
 
+    // Сортування
     if (sortBtn) {
         sortBtn.addEventListener('click', () => {
             isSortedAsc = !isSortedAsc;
