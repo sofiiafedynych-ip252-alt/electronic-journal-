@@ -1,3 +1,5 @@
+import { fetchTopicsFromDB } from './supabase.js';
+
 document.addEventListener('DOMContentLoaded', () => {
     const topicsListContainer = document.getElementById('topics-list');
     const searchInput = document.getElementById('search-input');
@@ -6,6 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let allTopics = [];
     let isSortedAsc = true;
 
+    // Функція для виведення тем на екран (рендер)
     function renderTopics(topicsToRender) {
         if (!topicsListContainer) return;
         topicsListContainer.innerHTML = '';
@@ -21,7 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div style="display: flex; justify-content: space-between; align-items: center;">
                     <div>
                         <h3 style="margin: 0 0 5px 0;">
-                            <a href="topic-detail.html?id=${topic.id}" style="color: #38bdf8; text-decoration: none; hover: underline;">
+                            <a href="topic-detail.html?id=${topic.id}" style="color: #38bdf8; text-decoration: none;">
                                 ${topic.title}
                             </a>
                         </h3>
@@ -36,25 +39,43 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // Головна функція ініціалізації з підтримкою Supabase
     async function initDashboard() {
-        const localTopics = localStorage.getItem('journal-topics');
-        
-        if (localTopics) {
-            allTopics = JSON.parse(localTopics);
+        if (topicsListContainer) {
+            topicsListContainer.innerHTML = `<li style="color: #38bdf8; text-align: center;">Синхронізація з хмарною базою даних Supabase...</li>`;
+        }
+
+        // 1. Пробуємо отримати свіжі дані з хмари Supabase
+        const dbTopics = await fetchTopicsFromDB();
+
+        if (dbTopics && dbTopics.length > 0) {
+            console.log('Дані успішно завантажено з Supabase PostgreSQL!');
+            allTopics = dbTopics;
+            localStorage.setItem('journal-topics', JSON.stringify(allTopics));
             renderTopics(allTopics);
         } else {
-            try {
-                const response = await fetch('public/data/topics.json');
-                allTopics = await response.json();
-                localStorage.setItem('journal-topics', JSON.stringify(allTopics));
+            // 2. Фолбек (підстраховка) — якщо в базі порожньо, беремо з localStorage або локального JSON
+            console.log('Хмара порожня або недоступна. Перемикаємось на локальне сховище...');
+            const localTopics = localStorage.getItem('journal-topics');
+            
+            if (localTopics) {
+                allTopics = JSON.parse(localTopics);
                 renderTopics(allTopics);
-            } catch (error) {
-                console.error(error);
-                if (topicsListContainer) topicsListContainer.innerHTML = `<li>Помилка завантаження</li>`;
+            } else {
+                try {
+                    const response = await fetch('public/data/topics.json');
+                    allTopics = await response.json();
+                    localStorage.setItem('journal-topics', JSON.stringify(allTopics));
+                    renderTopics(allTopics);
+                } catch (error) {
+                    console.error(error);
+                    if (topicsListContainer) topicsListContainer.innerHTML = `<li style="color: #ef4444;">Помилка завантаження даних</li>`;
+                }
             }
         }
     }
 
+    // Пошук/фільтрація
     if (searchInput) {
         searchInput.addEventListener('input', (e) => {
             const text = e.target.value.toLowerCase();
@@ -63,6 +84,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // Сортування
     if (sortBtn) {
         sortBtn.addEventListener('click', () => {
             isSortedAsc = !isSortedAsc;
