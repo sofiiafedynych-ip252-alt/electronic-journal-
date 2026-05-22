@@ -3,32 +3,95 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Журнал</title>
-    <link rel="stylesheet" href="css/style.css">
+    <title>Edzy - Мій розклад</title>
 </head>
-<body>
-    <header>
-        <nav>
-            <a href="index.html">Головна</a>
-            <a href="contacts.html">Контакти</a>
-            <a href="sign-in.html">Вхід</a>
-            <a href="dashboard.html">Журнал</a>
-            <a href="admin.html">Адмінка</a>
+<body style="background:#0f172a;color:#fff;font-family:sans-serif;margin:0;min-height:100vh;display:flex;flex-direction:column;">
+
+    <header style="background:#1e293b;padding:15px 40px;display:flex;justify-content:flex-end;align-items:center;border-bottom:1px solid #334155;box-sizing:border-box;width:100%;">
+        <nav style="display:flex;gap:30px;align-items:center;">
+            <a href="./index.html" onclick="localStorage.removeItem('currentUser')" style="color:#94a3b8;text-decoration:none;font-size:16px;">Вихід</a>
+            <a href="./contacts.html" style="color:#94a3b8;text-decoration:none;font-size:16px;">Контакти</a>
+            <a href="./dashboard.html" style="color:#38bdf8;text-decoration:none;font-size:16px;font-weight:bold;">Журнал</a>
+            <a href="./grades.html" style="color:#94a3b8;text-decoration:none;font-size:16px;">Оцінки</a>
+            <a href="./admin.html" id="adminLink" style="color:#94a3b8;text-decoration:none;font-size:16px;display:none;">Адмінка</a>
         </nav>
     </header>
-    <main>
-        <h1>Список тем (Каталог оцінювання)</h1>
+
+    <main style="flex:1;padding:60px 40px;box-sizing:border-box;max-width:1100px;width:100%;margin:0 auto;display:flex;flex-direction:column;gap:30px;">
         
-        <div style="display: flex; gap: 15px; margin-bottom: 20px; flex-wrap: wrap; align-items: center;">
-            <input type="text" id="search-input" placeholder="🔍 Швидкий пошук теми..." style="margin-bottom: 0; flex-grow: 1; max-width: 400px;">
-            <button id="sort-btn" style="padding: 12px 20px;">Сортувати: за кількістю занять</button>
+        <div style="border-left:4px solid #facc15; padding-left:20px;">
+            <h1 style="font-size:32px; font-weight:800; margin:0;">🗓️ Розклад занять</h1>
+            <p style="color:#94a3b8; margin:10px 0 0 0;">Група: <span id="groupLabel" style="color:#facc15; font-weight:bold;">Визначаємо...</span></p>
         </div>
-        
-        <ul id="topics-list">
-            <li style="color: #94a3b8;">Завантаження тем...</li>
-        </ul>
+
+        <div id="scheduleContainer" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap:25px; margin-top:20px;">
+            </div>
+
+        <div id="emptyMessage" style="display:none; text-align:center; padding:100px; background:#1e293b; border-radius:15px; border:2px dashed #334155;">
+            <p style="color:#64748b; font-size:18px;">Розклад для вашої групи ще не завантажено викладачем.</p>
+        </div>
     </main>
 
-    <script src="js/dashboard.js"></script>
+    <footer style="background:#1e293b;padding:20px;text-align:center;font-size:14px;color:#64748b;border-top:1px solid #334155;box-sizing:border-box;width:100%;">
+        &copy; 2026 Edzy. Всі права захищені.
+    </footer>
+
+    <script>
+        // Словник груп
+        const studentGroups = {
+            'student1': 'ПІ-23-1',
+            'student2': 'ПІ-23-1',
+            'student3': 'ПІ-23-2'
+        };
+
+        function renderStudentSchedule() {
+            const user = localStorage.getItem('currentUser');
+            if (!user) { window.location.href = './index.html'; return; }
+            if (user === 'admin') document.getElementById('adminLink').style.display = 'block';
+
+            const group = studentGroups[user] || 'ПІ-23-1';
+            document.getElementById('groupLabel').innerText = group;
+
+            const schedule = JSON.parse(localStorage.getItem(`schedule_${group}`)) || [];
+            const container = document.getElementById('scheduleContainer');
+            
+            if (schedule.length === 0) {
+                document.getElementById('emptyMessage').style.display = 'block';
+                return;
+            }
+
+            // Групуємо по днях
+            const days = ["Понеділок", "Вівторок", "Середа", "Четвер", "П'ятниця"];
+            container.innerHTML = '';
+
+            days.forEach(day => {
+                const dayClasses = schedule.filter(i => i.day === day);
+                if (dayClasses.length > 0) {
+                    let dayHtml = `
+                        <div style="background:#1e293b; border:1px solid #334155; border-radius:12px; overflow:hidden;">
+                            <div style="background:#334155; padding:15px 20px; font-weight:bold; color:#facc15; font-size:18px;">${day}</div>
+                            <div style="padding:10px;">
+                    `;
+
+                    dayClasses.sort((a,b) => a.time.localeCompare(b.time)).forEach(c => {
+                        dayHtml += `
+                            <div style="padding:15px; border-bottom:1px solid #2d3748; display:flex; flex-direction:column; gap:5px;">
+                                <div style="display:flex; justify-content:space-between; align-items:center;">
+                                    <span style="color:#38bdf8; font-weight:bold; font-size:14px;">${c.time}</span>
+                                    <span style="background:#0f172a; padding:2px 8px; border-radius:4px; font-size:12px; color:#94a3b8;">каб. ${c.room}</span>
+                                </div>
+                                <div style="font-size:16px; font-weight:bold;">${c.subject}</div>
+                            </div>
+                        `;
+                    });
+
+                    dayHtml += `</div></div>`;
+                    container.innerHTML += dayHtml;
+                }
+            });
+        }
+
+        window.onload = renderStudentSchedule;
+    </script>
 </body>
 </html>

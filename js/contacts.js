@@ -1,58 +1,62 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const contactsForm = document.getElementById('contacts-form');
-    const feedbackMessage = document.getElementById('feedback-message');
+    // 1. ШУКАЄМО ФОРМУ ЗВОРOТНОГО ЗВ'ЯЗКУ
+    const feedbackForm = document.getElementById('feedback-form') || document.querySelector('form');
 
-    if (!contactsForm) return;
+    if (!feedbackForm) {
+        console.error("Форму зворотного зв'язку не знайдено на сторінці contacts.html");
+        return;
+    }
 
-    contactsForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
+    // 2. ОБРОБКА ВІДПРАВКИ ФОРМИ
+    feedbackForm.addEventListener('submit', (e) => {
+        e.preventDefault(); // Зупиняємо перезавантаження сторінки
 
-        // Збираємо дані з форми
-        const name = document.getElementById('contact-name')?.value;
-        const email = document.getElementById('contact-email')?.value;
-        const message = document.getElementById('contact-text')?.value;
+        // Шукаємо поля введення
+        const nameInput = document.getElementById('user-name') || document.querySelector('input[type="text"]');
+        const emailInput = document.getElementById('user-email') || document.querySelector('input[type="email"]');
+        const messageInput = document.getElementById('user-message') || document.querySelector('textarea');
 
+        // Рядок для збору помилок
+        let errors = [];
+
+        // ВАЛІДАЦІЯ ПОЛІВ
+        if (!nameInput || nameInput.value.trim().length < 2) {
+            errors.push("Ім'я повинно містити не менше 2 символів.");
+        }
+
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailInput || !emailRegex.test(emailInput.value.trim())) {
+            errors.push("Будь ласка, вкажіть коректну адресу електронної пошти.");
+        }
+
+        if (!messageInput || messageInput.value.trim().length < 10) {
+            errors.push("Повідомлення занадто коротке (мінімум 10 символів).");
+        }
+
+        // Якщо є помилки — виводимо їх і зупиняємо процес
+        if (errors.length > 0) {
+            alert("Помилка заповнення форми:\n\n" + errors.join("\n"));
+            return;
+        }
+
+        // 3. ЗБЕРЕЖЕННЯ ПОВІДОМЛЕННЯ (Якщо валідація успішна)
         const newFeedback = {
             id: Date.now(),
-            name,
-            email,
-            message,
-            date: new Date().toLocaleString('uk-UA')
+            name: nameInput.value.trim(),
+            email: emailInput.value.trim(),
+            message: messageInput.value.trim(),
+            date: new Date().toLocaleString('uk-UA') // Додаємо дату відправки
         };
 
-        if (feedbackMessage) {
-            feedbackMessage.style.display = 'block';
-            feedbackMessage.innerText = 'Надсилання повідомлення...';
-            feedbackMessage.style.color = '#38bdf8';
-        }
+        // Беремо старі повідомлення або створюємо новий масив
+        let localFeedbacks = JSON.parse(localStorage.getItem('contacts-mirror') || '[]');
+        localFeedbacks.push(newFeedback);
+        
+        // Зберігаємо в localStorage для адмінки
+        localStorage.setItem('contacts-mirror', JSON.stringify(localFeedbacks));
 
-        // --- Логіка Сінхронізації: Supabase + Локальне дзеркало ---
-        try {
-            // Імітуємо або виконуємо запит до Supabase
-            // Оскільки ми працюємо в автономному презентаційному режимі,
-            // ми відразу дублюємо повідомлення в локальне дзеркало (localStorage)
-            
-            const existingFeedbacks = JSON.parse(localStorage.getItem('contacts-mirror') || '[]');
-            existingFeedbacks.push(newFeedback);
-            localStorage.setItem('contacts-mirror', JSON.stringify(existingFeedbacks));
-
-            console.log('Дані успішно синхронізовано з локальним дзеркалом та Supabase:', newFeedback);
-
-            // Успішний результат на екрані
-            setTimeout(() => {
-                if (feedbackMessage) {
-                    feedbackMessage.innerText = 'Дякуємо! Повідомлення успішно відправлено та збережено в дзеркало бази даних.';
-                    feedbackMessage.style.color = '#4ade80';
-                }
-                contactsForm.reset();
-            }, 800);
-
-        } catch (error) {
-            console.error('Помилка Supabase. Збережено лише локально:', error);
-            if (feedbackMessage) {
-                feedbackMessage.innerText = 'Помилка мережі. Повідомлення збережено локально в дзеркало.';
-                feedbackMessage.style.color = '#f87171';
-            }
-        }
+        // Сповіщаємо користувача та очищаємо форму
+        alert("✨ Дякуємо! Ваше повідомлення успішно надіслано адміністратору журналу.");
+        feedbackForm.reset();
     });
 });

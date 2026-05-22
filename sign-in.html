@@ -3,37 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Вхід / Реєстрація</title>
-    <link rel="stylesheet" href="css/style.css">
+    <title>Edzy - Авторизація</title>
+    <link rel="stylesheet" href="./css/style.css">
 </head>
-<body>
-    <header>
-        <nav>
-            <a href="index.html">Головна</a>
-            <a href="contacts.html">Контакти</a>
-            <a href="sign-in.html">Вхід</a>
-            <a href="dashboard.html">Журнал</a>
-            <a href="admin.html">Адмінка</a>
+<body style="background: #0f172a; color: #fff; font-family: sans-serif; margin: 0; min-height: 100vh; display: flex; flex-direction: column;">
+
+    <header style="background: #1e293b; padding: 15px 40px; display: flex; justify-content: flex-end; align-items: center; border-bottom: 1px solid #334155;">
+        <nav style="display: flex; gap: 30px; align-items: center;">
+            <a href="./index.html" style="color: #94a3b8; text-decoration: none; font-size: 16px;">Головна</a>
+            <a href="./contacts.html" style="color: #94a3b8; text-decoration: none; font-size: 16px;">Контакти</a>
+            <a href="./dashboard.html" style="color: #94a3b8; text-decoration: none; font-size: 16px;">Журнал</a>
+            <a href="./sign-in.html" style="color: #38bdf8; text-decoration: none; font-size: 16px; font-weight: bold;">Вхід</a>
+            <a href="./admin.html" style="color: #94a3b8; text-decoration: none; font-size: 16px;">Адмінка</a>
         </nav>
     </header>
-    <main>
-        <h1 id="form-title">Авторизація (Вхід)</h1>
-        
-        <div id="auth-status"></div>
 
-        <form id="auth-form">
-            <label for="email" style="color: #94a3b8; margin-bottom: 5px;">Електронна пошта:</label>
-            <input type="email" id="email" placeholder="example@domain.com" required>
+    <main style="flex: 1; display: flex; justify-content: center; align-items: center; padding: 40px 20px;">
+        <div style="background: #1e293b; padding: 40px; border-radius: 12px; border: 1px solid #334155; width: 100%; max-width: 400px; box-sizing: border-box; display: flex; flex-direction: column; gap: 20px;">
             
-            <label for="password" style="color: #94a3b8; margin-bottom: 5px;">Пароль:</label>
-            <input type="password" id="password" placeholder="Введіть ваш пароль" required>
+            <h1 style="font-size: 28px; font-weight: 800; margin: 0; text-align: center;">Авторизація</h1>
             
-            <button type="submit" id="submit-btn">Увійти</button>
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+                <label style="font-size: 14px; color: #94a3b8;">Електронна пошта:</label>
+                <input type="email" value="example@domain.com" style="background: #0f172a; border: 1px solid #334155; color: #fff; padding: 10px 12px; border-radius: 6px; font-size: 14px; width: 100%; box-sizing: border-box;">
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+                <label style="font-size: 14px; color: #94a3b8;">Пароль:</label>
+                <input type="password" value="password123" style="background: #0f172a; border: 1px solid #334155; color: #fff; padding: 10px 12px; border-radius: 6px; font-size: 14px; width: 100%; box-sizing: border-box;">
+            </div>
+
+            <button type="submit" class="btn-primary" style="padding: 12px; font-size: 15px; font-weight: bold; cursor: pointer; border: none; border-radius: 6px; width: 100%; margin-top: 5px;">Увійти</button>
             
-            <a href="#" id="toggle-auth" style="color: #38bdf8; text-decoration: none; margin-top: 15px; font-size: 14px; text-align: center;">Немає акаунту? Зареєструватися</a>
-        </form>
+            <a href="#" style="color: #38bdf8; text-decoration: none; font-size: 14px; text-align: center; margin-top: 5px;">Немає акаунту? Зареєструватися</a>
+        </div>
     </main>
 
-    <script src="js/auth.js"></script>
+    <footer class="main-footer">
+        &copy; 2026 Лабораторна робота з веб-технологій. Всі права захищені.
+    </footer>
+
 </body>
 </html>

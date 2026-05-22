@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edzy - Журнал оцінок</title>
+    <link rel="stylesheet" href="./css/style.css">
+</head>
+<body style="background:#0f172a;color:#fff;font-family:sans-serif;margin:0;min-height:100vh;display:flex;flex-direction:column;">
+
+    <header style="background:#1e293b;padding:15px 40px;display:flex;justify-content:flex-end;align-items:center;border-bottom:1px solid #334155;box-sizing:border-box;width:100%;">
+        <nav style="display:flex;gap:30px;align-items:center;">
+            <a href="./index.html" onclick="localStorage.removeItem('currentUser')" style="color:#94a3b8;text-decoration:none;font-size:16px;">Вихід</a>
+            <a href="./contacts.html" style="color:#94a3b8;text-decoration:none;font-size:16px;">Контакти</a>
+            <a href="./dashboard.html" style="color:#94a3b8;text-decoration:none;font-size:16px;">Журнал</a>
+            <a href="./grades.html" style="color:#38bdf8;text-decoration:none;font-size:16px;font-weight:bold;">Оцінки</a>
+            <a href="./admin.html" id="adminLink" style="color:#94a3b8;text-decoration:none;font-size:16px;display:none;">Адмінка</a>
+        </nav>
+    </header>
+
+    <main style="flex:1;padding:60px 40px;box-sizing:border-box;max-width:1100px;width:100%;margin:0 auto;display:flex;flex-direction:column;gap:35px;">
+        
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:20px;width:100%;">
+            <div>
+                <h1 style="font-size:32px;font-weight:800;margin:0 0 10px 0;line-height:1.2;">
+                    📊 Електронний журнал оцінок
+                </h1>
+                <p style="color:#94a3b8;font-size:16px;margin:0;">
+                    Студент: <span id="studentNameDisplay" style="color:#fff;font-weight:600;">Завантаження...</span> | Група: <span id="studentGroupDisplay" style="color:#fff;font-weight:600;">...</span>
+                </p>
+            </div>
+            
+            <div style="background:#1e293b;border:1px solid #334155;padding:15px 25px;border-radius:10px;display:flex;gap:30px;box-sizing:border-box;">
+                <div style="text-align:center;">
+                    <div style="font-size:12px;color:#94a3b8;font-weight:bold;text-transform:uppercase;margin-bottom:5px;">Середній бал</div>
+                    <div id="avgScoreDisplay" style="font-size:24px;font-weight:800;color:#22c55e;">0 / 100</div>
+                </div>
+                <div style="width:1px;background:#334155;height:40px;align-self:center;"></div>
+                <div style="text-align:center;">
+                    <div style="font-size:12px;color:#94a3b8;font-weight:bold;text-transform:uppercase;margin-bottom:5px;">ECTS</div>
+                    <div id="ectsScoreDisplay" style="font-size:24px;font-weight:800;color:#38bdf8;">F</div>
+                </div>
+            </div>
+        </div>
+
+        <div style="background:#1e293b;border:1px solid #334155;border-radius:12px;overflow:hidden;width:100%;">
+            <div style="padding:20px 25px;border-bottom:1px solid #334155;background:#1e293b;">
+                <h3 style="margin:0;font-size:18px;font-weight:700;">Відомість успішності (Семестровий контроль)</h3>
+            </div>
+            
+            <div style="overflow-x:auto;">
+                <table style="width:100%;border-collapse:collapse;text-align:left;font-size:15px;">
+                    <thead>
+                        <tr style="background:#0f172a;color:#94a3b8;border-bottom:1px solid #334155;">
+                            <th style="padding:15px 25px;font-weight:600;">Навчальний модуль</th>
+                            <th style="padding:15px 25px;font-weight:600;text-align:center;">Практичні (max 30)</th>
+                            <th style="padding:15px 25px;font-weight:600;text-align:center;">Лабораторні (max 40)</th>
+                            <th style="padding:15px 25px;font-weight:600;text-align:center;">Тести (max 30)</th>
+                            <th style="padding:15px 25px;font-weight:600;text-align:center;">Разом</th>
+                            <th style="padding:15px 25px;font-weight:600;text-align:center;">Оцінка ECTS</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="border-bottom:1px solid #334155;background:#1e293b;">
+                            <td style="padding:20px 25px;font-weight:600;color:#fff;">Модуль 1. Основи роботи з Git та GitHub</td>
+                            <td id="m1_p" style="padding:20px 25px;text-align:center;color:#e2e8f0;">—</td>
+                            <td id="m1_l" style="padding:20px 25px;text-align:center;color:#e2e8f0;">—</td>
+                            <td id="m1_t" style="padding:20px 25px;text-align:center;color:#e2e8f0;">—</td>
+                            <td id="m1_tot" style="padding:20px 25px;text-align:center;font-weight:bold;color:#eab308;">0</td>
+                            <td id="m1_badge" style="padding:20px 25px;text-align:center;"></td>
+                        </tr>
+
+                        <tr style="border-bottom:1px solid #334155;background:#1e293b;">
+                            <td style="padding:20px 25px;font-weight:600;color:#fff;">Модуль 2. Структура проєкту та HTML5</td>
+                            <td id="m2_p" style="padding:20px 25px;text-align:center;color:#e2e8f0;">—</td>
+                            <td id="m2_l" style="padding:20px 25px;text-align:center;color:#e2e8f0;">—</td>
+                            <td id="m2_t" style="padding:20px 25px;text-align:center;color:#e2e8f0;">—</td>
+                            <td id="m2_tot" style="padding:20px 25px;text-align:center;font-weight:bold;color:#eab308;">0</td>
+                            <td id="m2_badge" style="padding:20px 25px;text-align:center;"></td>
+                        </tr>
+
+                        <tr style="border-bottom:1px solid #334155;background:#1e293b;">
+                            <td style="padding:20px 25px;font-weight:600;color:#fff;">Модуль 3. Стилізація CSS та адаптивність</td>
+                            <td id="m3_p" style="padding:20px 25px;text-align:center;color:#e2e8f0;">—</td>
+                            <td id="m3_l" style="padding:20px 25px;text-align:center;color:#e2e8f0;">—</td>
+                            <td id="m3_t" style="padding:20px 25px;text-align:center;color:#e2e8f0;">—</td>
+                            <td id="m3_tot" style="padding:20px 25px;text-align:center;font-weight:bold;color:#22c55e;">0</td>
+                            <td id="m3_badge" style="padding:20px 25px;text-align:center;"></td>
+                        </tr>
+
+                        <tr style="background:#1e293b;">
+                            <td style="padding:20px 25px;font-weight:600;color:#fff;">Модуль 4. Динамічний рендер через JavaScript</td>
+                            <td id="m4_p" style="padding:20px 25px;text-align:center;color:#94a3b8;">—</td>
+                            <td id="m4_l" style="padding:20px 25px;text-align:center;color:#94a3b8;">—</td>
+                            <td id="m4_t" style="padding:20px 25px;text-align:center;color:#94a3b8;">—</td>
+                            <td id="m4_tot" style="padding:20px 25px;text-align:center;font-weight:bold;color:#eab308;">0</td>
+                            <td id="m4_badge" style="padding:20px 25px;text-align:center;"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div style="background:#1e293b;border:1px solid #334155;padding:20px 25px;border-radius:8px;box-sizing:border-box;width:100%;display:flex;align-items:center;gap:15px;">
+            <span style="font-size:20px;">💡</span>
+            <p style="color:#94a3b8;font-size:14px;margin:0;line-height:1.5;">
+                Бали оновлюються автоматично після того, як викладач перевірить ваші роботи в Панелі адміністратора. Для отримання автомату необхідно набрати не менше <b>75 балів</b> сумарно за кожен модуль.
+            </p>
+        </div>
+
+    </main>
+
+    <footer style="background:#1e293b;padding:20px;text-align:center;font-size:14px;color:#64748b;border-top:1px solid #334155;box-sizing:border-box;width:100%;">
+        &copy; 2026 Лабораторна робота з веб-технологій. Всі права захищені.
+    </footer>
+
+    <script>
+        const studentProfiles = {
+            student1: { name: "Олексій Іванов", group: "ПІ-23-1" },
+            student2: { name: "Марія Петренко", group: "ПІ-23-1" },
+            student3: { name: "Дмитро Коваленко", group: "ПІ-23-2" }
+        };
+
+        const defaultIvanovData = {
+            m1: { prac: 28, lab: 38, test: 29, total: 95 },
+            m2: { prac: 27, lab: 36, test: 25, total: 88 },
+            m3: { prac: 30, lab: 39, test: 28, total: 97 },
+            m4: { prac: '—', lab: '—', test: '—', total: 0 }
+        };
+
+        function getBadgeHTML(score, isDataExist) {
+            if (!isDataExist) return '<span style="background:#334155;color:#94a3b8;padding:4px 10px;border-radius:6px;font-size:13px;font-weight:bold;">Ще не здано</span>';
+            if (score >= 90) return '<span style="background:#14532d;color:#4ade80;padding:4px 10px;border-radius:6px;font-size:13px;font-weight:bold;">Відмінно (A)</span>';
+            if (score >= 82) return '<span style="background:#1e3a8a;color:#60a5fa;padding:4px 10px;border-radius:6px;font-size:13px;font-weight:bold;">Добре (B)</span>';
+            if (score >= 74) return '<span style="background:#1e3a8a;color:#60a5fa;padding:4px 10px;border-radius:6px;font-size:13px;font-weight:bold;">Добре (C)</span>';
+            if (score >= 64) return '<span style="background:#78350f;color:#fbbf24;padding:4px 10px;border-radius:6px;font-size:13px;font-weight:bold;">Задовільно (D)</span>';
+            if (score >= 60) return '<span style="background:#78350f;color:#fbbf24;padding:4px 10px;border-radius:6px;font-size:13px;font-weight:bold;">Задовільно (E)</span>';
+            return '<span style="background:#7f1d1d;color:#f87171;padding:4px 10px;border-radius:6px;font-size:13px;font-weight:bold;">Незараховано (F)</span>';
+        }
+
+        function getEctsLetter(score) {
+            if (score >= 90) return 'A';
+            if (score >= 82) return 'B';
+            if (score >= 74) return 'C';
+            if (score >= 64) return 'D';
+            if (score >= 60) return 'E';
+            return 'F';
+        }
+
+        function loadSessionUserGrades() {
+            const userRole = localStorage.getItem('currentUser');
+
+            // Якщо користувач взагалі не увійшов, повертаємо на авторизацію
+            if (!userRole) {
+                window.location.href = './index.html';
+                return;
+            }
+
+            // Якщо увійшов адмін, показуємо йому кнопку адмінки і завантажуємо дефолтного студента
+            let currentStudent = userRole;
+            if (userRole === 'admin') {
+                document.getElementById('adminLink').style.display = 'block';
+                currentStudent = 'student1'; 
+            }
+
+            // Виводимо текстові дані студента
+            const profile = studentProfiles[currentStudent] || { name: "Олексій Іванов", group: "ПІ-23-1" };
+            document.getElementById('studentNameDisplay').innerText = profile.name;
+            document.getElementById('studentGroupDisplay').innerText = profile.group;
+
+            let sumOfAllModules = 0;
+            let gradedModulesCount = 0;
+
+            for (let m = 1; m <= 4; m++) {
+                const pCell = document.getElementById(`m${m}_p`);
+                const lCell = document.getElementById(`m${m}_l`);
+                const tCell = document.getElementById(`m${m}_t`);
+                const totCell = document.getElementById(`m${m}_tot`);
+                const badgeCell = document.getElementById(`m${m}_badge`);
+
+                const storedData = localStorage.getItem(`grades_${currentStudent}_m${m}`);
+
+                if (storedData) {
+                    const parsed = JSON.parse(storedData);
+                    const p = parseInt(parsed.prac) || 0;
+                    const l = parseInt(parsed.lab) || 0;
+                    const t = parseInt(parsed.test) || 0;
+                    const total = p + l + t;
+
+                    pCell.innerText = p; pCell.style.color = '#e2e8f0';
+                    lCell.innerText = l; lCell.style.color = '#e2e8f0';
+                    tCell.innerText = t; tCell.style.color = '#e2e8f0';
+                    totCell.innerText = total; totCell.style.color = '#22c55e';
+                    badgeCell.innerHTML = getBadgeHTML(total, true);
+
+                    sumOfAllModules += total;
+                    gradedModulesCount++;
+                } else {
+                    if (currentStudent === 'student1') {
+                        const def = defaultIvanovData[`m${m}`];
+                        pCell.innerText = def.prac; pCell.style.color = def.prac === '—' ? '#94a3b8' : '#e2e8f0';
+                        lCell.innerText = def.lab; lCell.style.color = def.lab === '—' ? '#94a3b8' : '#e2e8f0';
+                        tCell.innerText = def.test; tCell.style.color = def.test === '—' ? '#94a3b8' : '#e2e8f0';
+                        totCell.innerText = def.total;
+                        totCell.style.color = def.total > 0 ? '#22c55e' : '#eab308';
+                        badgeCell.innerHTML = getBadgeHTML(def.total, def.total > 0);
+
+                        if (def.total > 0) {
+                            sumOfAllModules += def.total;
+                            gradedModulesCount++;
+                        }
+                    } else {
+                        pCell.innerText = '—'; pCell.style.color = '#94a3b8';
+                        lCell.innerText = '—'; lCell.style.color = '#94a3b8';
+                        tCell.innerText = '—'; tCell.style.color = '#94a3b8';
+                        totCell.innerText = '0'; totCell.style.color = '#eab308';
+                        badgeCell.innerHTML = getBadgeHTML(0, false);
+                    }
+                }
+            }
+
+            let finalAvg = 0;
+            if (currentStudent === 'student1' && gradedModulesCount === 3) {
+                finalAvg = 92.5; 
+            } else if (gradedModulesCount > 0) {
+                finalAvg = parseFloat((sumOfAllModules / gradedModulesCount).toFixed(1));
+            }
+
+            const avgTextEl = document.getElementById('avgScoreDisplay');
+            avgTextEl.innerText = `${finalAvg} / 100`;
+            document.getElementById('ectsScoreDisplay').innerText = getEctsLetter(Math.round(finalAvg));
+
+            if (finalAvg >= 90) avgTextEl.style.color = '#22c55e';
+            else if (finalAvg >= 60) avgTextEl.style.color = '#38bdf8';
+            else avgTextEl.style.color = '#f87171';
+        }
+
+        window.onload = loadSessionUserGrades;
+    </script>
+</body>
+</html>

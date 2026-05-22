@@ -3,44 +3,168 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Адмінка</title>
-    <link rel="stylesheet" href="css/style.css">
+    <title>Edzy - Панель адміністратора</title>
 </head>
-<body>
-    <header>
-        <nav>
-            <a href="index.html">Головна</a>
-            <a href="contacts.html">Контакти</a>
-            <a href="sign-in.html">Вхід</a>
-            <a href="dashboard.html">Журнал</a>
-            <a href="admin.html">Адмінка</a>
+<body style="background:#0f172a;color:#fff;font-family:sans-serif;margin:0;min-height:100vh;display:flex;flex-direction:column;">
+
+    <script>
+        (function enforceAdminSecurity() {
+            const userRole = localStorage.getItem('currentUser');
+            if (!userRole || userRole !== 'admin') {
+                alert('🚨 Доступ обмежено! Студенти не мають прав для перегляду Панелі Адміністратора.');
+                window.location.href = './index.html';
+            }
+        })();
+    </script>
+
+    <header style="background:#1e293b;padding:15px 40px;display:flex;justify-content:flex-end;align-items:center;border-bottom:1px solid #334155;box-sizing:border-box;width:100%;">
+        <nav style="display:flex;gap:30px;align-items:center;">
+            <a href="./index.html" onclick="localStorage.removeItem('currentUser')" style="color:#94a3b8;text-decoration:none;font-size:16px;">Вихід</a>
+            <a href="./contacts.html" style="color:#94a3b8;text-decoration:none;font-size:16px;">Контакти</a>
+            <a href="./dashboard.html" style="color:#94a3b8;text-decoration:none;font-size:16px;">Журнал</a>
+            <a href="./grades.html" style="color:#94a3b8;text-decoration:none;font-size:16px;">Оцінки</a>
+            <a href="./admin.html" style="color:#38bdf8;text-decoration:none;font-size:16px;font-weight:bold;">Адмінка</a>
         </nav>
     </header>
-    <main>
-        <h1>Панель керування журналом (Адміністратор)</h1>
-        <p style="color: #10b981;">✅ Доступ дозволено! Режим редагування CRUD (Модульна архітектура).</p>
+
+    <main style="flex:1;padding:60px 40px;box-sizing:border-box;max-width:1000px;width:100%;margin:0 auto;display:flex;flex-direction:column;gap:40px;">
         
-        <div style="background-color: #334155; padding: 20px; border-radius: 8px; margin-top: 20px;">
-            <h3>➕ Додати нову тему в журнал</h3>
-            <form id="add-topic-form">
-                <input type="text" id="new-title" placeholder="Назва теми / модуля" required>
-                <input type="text" id="new-desc" placeholder="Короткий опис модуля" required>
-                <input type="number" id="new-lessons" placeholder="Кількість занять" required>
-                <button type="submit">Зберегти тему</button>
+        <div>
+            <h1 style="font-size:36px;font-weight:800;margin:0 0 12px 0;line-height:1.2;">Панель адміністратора</h1>
+            <p style="color:#22c55e;font-size:16px;font-weight:bold;margin:0;">✓ Повний доступ до керування базою даних активовано.</p>
+        </div>
+
+        <div style="background:#1e293b;border:1px solid #334155;padding:35px;border-radius:12px;box-sizing:border-box;width:100%;">
+            <h3 style="margin-top:0;margin-bottom:25px;font-size:20px;color:#38bdf8;font-weight:700;">🎓 Виставлення оцінок</h3>
+            <form id="gradesForm" style="display:flex;flex-direction:column;gap:20px;">
+                <div style="display:grid;grid-template-columns: 1fr 1fr; gap:20px;">
+                    <div>
+                        <label style="display:block;font-size:14px;color:#94a3b8;margin-bottom:8px;">Студент</label>
+                        <select id="studentSelect" style="width:100%;background:#0f172a;border:1px solid #334155;padding:14px;border-radius:6px;color:#fff;">
+                            <option value="student1">Олексій Іванов (ПІ-23-1)</option>
+                            <option value="student2">Марія Петренко (ПІ-23-1)</option>
+                            <option value="student3">Дмитро Коваленко (ПІ-23-2)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label style="display:block;font-size:14px;color:#94a3b8;margin-bottom:8px;">Модуль</label>
+                        <select id="moduleSelect" style="width:100%;background:#0f172a;border:1px solid #334155;padding:14px;border-radius:6px;color:#fff;">
+                            <option value="m1">Модуль 1. Git та GitHub</option>
+                            <option value="m2">Модуль 2. HTML5</option>
+                            <option value="m3">Модуль 3. CSS та Адаптивність</option>
+                            <option value="m4">Модуль 4. JavaScript</option>
+                        </select>
+                    </div>
+                </div>
+                <div style="display:grid;grid-template-columns:repeat(3, 1fr);gap:20px;">
+                    <input type="number" id="gradePrac" placeholder="Практичні (max 30)" required style="background:#0f172a;border:1px solid #334155;padding:14px;border-radius:6px;color:#fff;">
+                    <input type="number" id="gradeLab" placeholder="Лабораторні (max 40)" required style="background:#0f172a;border:1px solid #334155;padding:14px;border-radius:6px;color:#fff;">
+                    <input type="number" id="gradeTest" placeholder="Тести (max 30)" required style="background:#0f172a;border:1px solid #334155;padding:14px;border-radius:6px;color:#fff;">
+                </div>
+                <button type="submit" style="background:#22c55e;color:#fff;border:none;padding:15px;border-radius:6px;font-weight:bold;cursor:pointer;">Зберегти бали</button>
             </form>
         </div>
 
-        <div style="margin-top: 30px;">
-            <h3>📋 Поточні теми в системі (Редагування/Видалення)</h3>
-            <ul id="admin-topics-list"></ul>
+        <div style="background:#1e293b;border:1px solid #334155;padding:35px;border-radius:12px;box-sizing:border-box;width:100%;">
+            <h3 style="margin-top:0;margin-bottom:25px;font-size:20px;color:#facc15;font-weight:700;">🗓️ Керування розкладом занять</h3>
+            <div style="display:flex;flex-direction:column;gap:20px;">
+                <div style="display:grid;grid-template-columns: 1fr 1fr 1fr; gap:15px;">
+                    <select id="schGroup" style="background:#0f172a;border:1px solid #334155;padding:12px;border-radius:6px;color:#fff;">
+                        <option value="ПІ-23-1">Група ПІ-23-1</option>
+                        <option value="ПІ-23-2">Група ПІ-23-2</option>
+                    </select>
+                    <select id="schDay" style="background:#0f172a;border:1px solid #334155;padding:12px;border-radius:6px;color:#fff;">
+                        <option>Понеділок</option><option>Вівторок</option><option>Середа</option><option>Четвер</option><option>П'ятниця</option>
+                    </select>
+                    <input type="text" id="schTime" placeholder="Час (напр. 08:30)" style="background:#0f172a;border:1px solid #334155;padding:12px;border-radius:6px;color:#fff;">
+                </div>
+                <div style="display:grid;grid-template-columns: 2fr 1fr; gap:15px;">
+                    <input type="text" id="schSubject" placeholder="Назва дисципліни" style="background:#0f172a;border:1px solid #334155;padding:12px;border-radius:6px;color:#fff;">
+                    <input type="text" id="schRoom" placeholder="Аудиторія / Zoom" style="background:#0f172a;border:1px solid #334155;padding:12px;border-radius:6px;color:#fff;">
+                </div>
+                <button onclick="addScheduleItem()" style="background:#facc15;color:#000;border:none;padding:15px;border-radius:6px;font-weight:bold;cursor:pointer;">Додати пару в розклад</button>
+            </div>
+            
+            <div id="adminScheduleList" style="margin-top:25px; display:flex; flex-direction:column; gap:10px;">
+                </div>
         </div>
 
-        <div style="margin-top: 40px; border-top: 2px solid #334155; padding-top: 20px;">
-            <h3>📥 Повідомлення від користувачів (Зворотний зв'язок)</h3>
-            <div id="messages-list">Завантаження повідомлень...</div>
+        <div style="background:#1e293b;border:1px solid #334155;padding:35px;border-radius:12px;box-sizing:border-box;width:100%;">
+            <h3 style="margin-top:0;margin-bottom:25px;font-size:20px;color:#a78bfa;font-weight:700;">+ Додати тему модуля</h3>
+            <form style="display:flex;gap:15px;">
+                <input type="text" placeholder="Назва теми..." style="flex:1;background:#0f172a;border:1px solid #334155;padding:14px;border-radius:6px;color:#fff;">
+                <button type="button" style="background:#38bdf8;color:#0f172a;border:none;padding:0 25px;border-radius:6px;font-weight:bold;">Зберегти</button>
+            </form>
+        </div>
+
+        <div style="width:100%;">
+            <h3 style="font-size:22px;font-weight:700;margin:0 0 20px 0;border-bottom:1px solid #334155;padding-bottom:12px;">📬 Повідомлення від студентів</h3>
+            <div style="background:#1e293b;border:1px solid #334155;padding:25px;border-radius:8px;text-align:center;">
+                <p style="color:#94a3b8;font-size:16px;margin:0;font-style:italic;">Повідомлень немає</p>
+            </div>
         </div>
     </main>
 
-    <script type="module" src="js/admin-gate.js"></script>
+    <script>
+        // ЛОГІКА ОЦІНОК
+        document.getElementById('gradesForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const student = document.getElementById('studentSelect').value;
+            const module = document.getElementById('moduleSelect').value;
+            const prac = document.getElementById('gradePrac').value;
+            const lab = document.getElementById('gradeLab').value;
+            const test = document.getElementById('gradeTest').value;
+            localStorage.setItem(`grades_${student}_${module}`, JSON.stringify({prac, lab, test}));
+            alert('Оцінки збережено!');
+        });
+
+        // ЛОГІКА РОЗКЛАДУ
+        function addScheduleItem() {
+            const group = document.getElementById('schGroup').value;
+            const item = {
+                id: Date.now(),
+                day: document.getElementById('schDay').value,
+                time: document.getElementById('schTime').value,
+                subject: document.getElementById('schSubject').value,
+                room: document.getElementById('schRoom').value
+            };
+            
+            let schedule = JSON.parse(localStorage.getItem(`schedule_${group}`)) || [];
+            schedule.push(item);
+            localStorage.setItem(`schedule_${group}`, JSON.stringify(schedule));
+            
+            document.getElementById('schTime').value = '';
+            document.getElementById('schSubject').value = '';
+            document.getElementById('schRoom').value = '';
+            
+            renderAdminSchedule();
+        }
+
+        function deleteScheduleItem(group, id) {
+            let schedule = JSON.parse(localStorage.getItem(`schedule_${group}`));
+            schedule = schedule.filter(i => i.id !== id);
+            localStorage.setItem(`schedule_${group}`, JSON.stringify(schedule));
+            renderAdminSchedule();
+        }
+
+        function renderAdminSchedule() {
+            const group = document.getElementById('schGroup').value;
+            const list = document.getElementById('adminScheduleList');
+            const schedule = JSON.parse(localStorage.getItem(`schedule_${group}`)) || [];
+            
+            list.innerHTML = `<h4 style="margin:10px 0; color:#94a3b8;">Поточні пари для ${group}:</h4>`;
+            schedule.forEach(i => {
+                list.innerHTML += `
+                    <div style="background:#0f172a; padding:12px 20px; border-radius:8px; display:flex; justify-content:space-between; align-items:center;">
+                        <span><b>${i.day} (${i.time})</b>: ${i.subject} - каб. ${i.room}</span>
+                        <button onclick="deleteScheduleItem('${group}', ${i.id})" style="background:#7f1d1d; color:#f87171; border:none; padding:5px 12px; border-radius:4px; cursor:pointer;">Видалити</button>
+                    </div>
+                `;
+            });
+        }
+
+        document.getElementById('schGroup').addEventListener('change', renderAdminSchedule);
+        window.onload = renderAdminSchedule;
+    </script>
 </body>
 </html>

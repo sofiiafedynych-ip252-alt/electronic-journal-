@@ -1,85 +1,54 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const topicsListContainer = document.getElementById('topics-list');
-    const searchInput = document.getElementById('search-input');
-    const sortBtn = document.getElementById('sort-btn');
+    const topicsContainer = document.getElementById('topics-container') 
+                         || document.getElementById('journal-grid')
+                         || document.querySelector('.grid, .dashboard-grid, main div');
 
-    let allTopics = [];
-    let isSortedAsc = true;
+    function renderDashboardTopics() {
+        if (!topicsContainer) return;
 
-    // Вбудована функція генерації картки (без імпорту)
-    function createTopicCardHTML(topic) {
-        return `
-            <div style="display: flex; justify-content: space-between; align-items: center; background: #1e293b; padding: 15px; border-radius: 8px; margin-bottom: 12px; border: 1px solid #334155;">
-                <div>
-                    <h3 style="margin: 0 0 5px 0;">
-                        <a href="topic-detail.html?id=${topic.id}" style="color: #38bdf8; text-decoration: none; font-weight: 600;">
-                            ${topic.title}
-                        </a>
-                    </h3>
-                    <p style="margin: 0; color: #94a3b8; font-size: 14px;">${topic.description}</p>
+        const localTopics = JSON.parse(localStorage.getItem('journal-topics') || '[]');
+
+        if (localTopics.length === 0) {
+            topicsContainer.innerHTML = `
+                <div style="grid-column: 1/-1; text-align: center; padding: 40px; color: #64748b; font-style: italic;">
+                    Журнал порожній. Додайте тематичні модулі в панелі Адмінки.
                 </div>
-                <span style="background-color: #0f172a; color: #38bdf8; padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: bold; border: 1px solid #38bdf8;">
-                    ${topic.lessons} занять
-                </span>
-            </div>
-        `;
-    }
-
-    function renderTopics(topicsToRender) {
-        if (!topicsListContainer) return;
-        topicsListContainer.innerHTML = '';
-
-        if (topicsToRender.length === 0) {
-            topicsListContainer.innerHTML = `<div style="color: #94a3b8; text-align: center; padding: 20px;">Нічого не знайдено за вашим запитом.</div>`;
+            `;
             return;
         }
 
-        const htmlContent = topicsToRender.map(topic => createTopicCardHTML(topic)).join('');
-        topicsListContainer.innerHTML = htmlContent;
-    }
+        topicsContainer.innerHTML = '';
 
-    async function initDashboard() {
-        // Очищаємо localStorage, щоб примусово скинути старі забаговані шляхи
-        localStorage.removeItem('journal-topics');
-        
-        try {
-            // Пробуємо стандартний відносний шлях
-            let response = await fetch('./public/data/topics.json');
-            if (!response.ok) {
-                // Якщо Vite підняв public як корінь, пробуємо альтернативний шлях
-                response = await fetch('/data/topics.json');
-            }
+        localTopics.forEach((topic, index) => {
+            const card = document.createElement('div');
             
-            allTopics = await response.json();
-            localStorage.setItem('journal-topics', JSON.stringify(allTopics));
-            renderTopics(allTopics);
-        } catch (error) {
-            console.error("Помилка завантаження файлу тем:", error);
-            if (topicsListContainer) {
-                topicsListContainer.innerHTML = `<div style="color: #ef4444; text-align: center; padding: 20px;">Помилка завантаження каталогу тем.</div>`;
-            }
-        }
-    }
+            card.style.cssText = `
+                background: #1e293b;
+                border: 1px solid #334155;
+                border-radius: 8px;
+                padding: 20px;
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+                box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            `;
 
-    if (searchInput) {
-        searchInput.addEventListener('input', (e) => {
-            const text = e.target.value.toLowerCase();
-            const filtered = allTopics.filter(t => 
-                t.title.toLowerCase().includes(text) || 
-                t.description.toLowerCase().includes(text)
-            );
-            renderTopics(filtered);
+            // УВАГА: тут змінено шлях на /topic-detail.html замість /detail.html
+            card.innerHTML = `
+                <div>
+                    <span style="color: #64748b; font-size: 11px; font-weight: bold; text-transform: uppercase;">Модуль ${index + 1}</span>
+                    <h3 style="margin: 8px 0 5px 0; color: #fff; font-size: 18px;">${topic.title}</h3>
+                    <p style="color: #94a3b8; font-size: 14px; line-height: 1.5; margin: 0 0 15px 0;">${topic.description || 'Опис відсутній'}</p>
+                </div>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 15px; padding-top: 15px; border-top: 1px solid #334155;">
+                    <span style="color: #38bdf8; font-size: 14px; font-weight: 500;">⏱ ${topic.lessons} занять</span>
+                    <a href="/topic-detail.html?id=${topic.id}" style="background: #334155; color: #fff; text-decoration: none; padding: 6px 12px; border-radius: 4px; font-size: 13px; font-weight: 500;">Читати далі →</a>
+                </div>
+            `;
+
+            topicsContainer.appendChild(card);
         });
     }
 
-    if (sortBtn) {
-        sortBtn.addEventListener('click', () => {
-            isSortedAsc = !isSortedAsc;
-            const sorted = [...allTopics].sort((a, b) => isSortedAsc ? a.lessons - b.lessons : b.lessons - a.lessons);
-            sortBtn.innerText = isSortedAsc ? "Сортувати: Мін занять" : "Сортувати: Макс занять";
-            renderTopics(sorted);
-        });
-    }
-
-    initDashboard();
+    renderDashboardTopics();
 });

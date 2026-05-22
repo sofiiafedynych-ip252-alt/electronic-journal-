@@ -3,37 +3,54 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Контакти</title>
-    <link rel="stylesheet" href="css/style.css">
+    <title>Edzy - Контакти</title>
+    <link rel="stylesheet" href="./css/style.css">
 </head>
-<body>
-    <header>
-        <nav>
-            <a href="index.html">Головна</a>
-            <a href="contacts.html">Контакти</a>
-            <a href="sign-in.html">Вхід</a>
-            <a href="dashboard.html">Журнал</a>
-            <a href="admin.html">Адмінка</a>
+<body style="background: #0f172a; color: #fff; font-family: sans-serif; margin: 0; min-height: 100vh; display: flex; flex-direction: column;">
+
+    <header style="background: #1e293b; padding: 15px 40px; display: flex; justify-content: flex-end; align-items: center; border-bottom: 1px solid #334155;">
+        <nav style="display: flex; gap: 30px; align-items: center;">
+            <a href="./index.html" style="color: #94a3b8; text-decoration: none; font-size: 16px;">Головна</a>
+            <a href="./contacts.html" style="color: #38bdf8; text-decoration: none; font-size: 16px; font-weight: bold;">Контакти</a>
+            <a href="./dashboard.html" style="color: #94a3b8; text-decoration: none; font-size: 16px;">Журнал</a>
+            <a href="./sign-in.html" style="color: #94a3b8; text-decoration: none; font-size: 16px;">Вхід</a>
+            <a href="./admin.html" style="color: #94a3b8; text-decoration: none; font-size: 16px;">Адмінка</a>
         </nav>
     </header>
-    <main>
-        <h1>Зворотний зв'язок</h1>
-        <p>Маєте запитання щодо виставлених балів чи навчальних модулів? Надішліть повідомлення адміністрації журналу:</p>
+
+    <main style="flex: 1; padding: 50px 80px; display: flex; justify-content: space-between; align-items: center; gap: 50px; box-sizing: border-box;">
         
-        <form id="feedback-form" style="max-width: 500px; margin-top: 20px;">
-            <label for="fb-name" style="color: #94a3b8; margin-bottom: 5px;">Ваше ім'я:</label>
-            <input type="text" id="fb-name" placeholder="Іван Іванов" required>
+        <div style="width: 50%; display: flex; flex-direction: column; gap: 20px;">
+            <h1 style="font-size: 44px; font-weight: 800; margin: 0; line-height: 1.2;">Зворотний зв'язок</h1>
+            <p style="color: #94a3b8; font-size: 18px; line-height: 1.6; margin: 0;">
+                Маєте запитання щодо виставлених балів чи навчальних модулів? Надішліть повідомлення адміністрації журналу.
+            </p>
+        </div>
 
-            <label for="fb-email" style="color: #94a3b8; margin-bottom: 5px;">Ваш Email:</label>
-            <input type="email" id="fb-email" placeholder="student@domain.com" required>
-
-            <label for="fb-message" style="color: #94a3b8; margin-bottom: 5px;">Повідомлення:</label>
-            <textarea id="fb-message" placeholder="Опишіть ваше питання..." rows="5" style="background-color: #334155; border: 1px solid #475569; color: white; padding: 12px; margin-bottom: 15px; border-radius: 6px; font-family: inherit; font-size: 14px; resize: vertical;" required></textarea>
-
-            <button type="submit">Надіслати повідомлення</button>
+        <form style="display: flex; flex-direction: column; gap: 20px; width: 45%; max-width: 450px; background: #1e293b; padding: 30px; border-radius: 12px; border: 1px solid #334155; box-sizing: border-box;">
+            
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+                <label style="color: #94a3b8; font-size: 14px; font-weight: 600;">Ваше ім'я:</label>
+                <input type="text" value="Іван Іванов" style="background: #0f172a; border: 1px solid #334155; color: #fff; padding: 12px; border-radius: 6px; font-size: 14px; width: 100%; box-sizing: border-box;">
+            </div>
+            
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+                <label style="color: #94a3b8; font-size: 14px; font-weight: 600;">Ваш Email:</label>
+                <input type="email" placeholder="student@domain.com" style="background: #0f172a; border: 1px solid #334155; color: #fff; padding: 12px; border-radius: 6px; font-size: 14px; width: 100%; box-sizing: border-box;">
+            </div>
+            
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+                <label style="color: #94a3b8; font-size: 14px; font-weight: 600;">Повідомлення:</label>
+                <textarea placeholder="Опишіть ваше питання..." style="background: #0f172a; border: 1px solid #334155; color: #fff; padding: 12px; border-radius: 6px; font-size: 14px; width: 100%; min-height: 120px; resize: vertical; box-sizing: border-box; font-family: sans-serif;"></textarea>
+            </div>
+            
+            <button type="submit" class="btn-primary" style="padding: 14px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 15px; width: 100%; margin-top: 5px;">Надіслати повідомлення</button>
         </form>
     </main>
 
-    <script src="js/contacts.js"></script>
+    <footer class="main-footer">
+        &copy; 2026 Лабораторна робота з веб-технологій. Всі права захищені.
+    </footer>
+
 </body>
 </html>

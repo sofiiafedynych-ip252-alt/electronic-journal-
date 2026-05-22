@@ -3,43 +3,121 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Деталі модуля</title>
-    <link rel="stylesheet" href="css/style.css">
+    <title>Edzy - Деталі модуля та завдання</title>
+    <link rel="stylesheet" href="./css/style.css">
 </head>
-<body>
-    <header>
-        <nav>
-            <a href="index.html">Головна</a>
-            <a href="contacts.html">Контакти</a>
-            <a href="sign-in.html">Вхід</a>
-            <a href="dashboard.html">Журнал</a>
-            <a href="admin.html">Адмінка</a>
+<body style="background:#0f172a;color:#fff;font-family:sans-serif;margin:0;min-height:100vh;display:flex;flex-direction:column;">
+
+    <header style="background:#1e293b;padding:15px 40px;display:flex;justify-content:flex-end;align-items:center;border-bottom:1px solid #334155;box-sizing:border-box;width:100%;">
+        <nav style="display:flex;gap:30px;align-items:center;">
+            <a href="./index.html" style="color:#94a3b8;text-decoration:none;font-size:16px;">Головна</a>
+            <a href="./contacts.html" style="color:#94a3b8;text-decoration:none;font-size:16px;">Контакти</a>
+            <a href="./dashboard.html" style="color:#38bdf8;text-decoration:none;font-size:16px;font-weight:bold;">Журнал</a>
+            <a href="./admin.html" style="color:#94a3b8;text-decoration:none;font-size:16px;">Адмінка</a>
         </nav>
     </header>
-    <main>
-        <div id="detail-container">
-            <p style="color: #94a3b8;">Завантаження інформації про модуль...</p>
+
+    <main style="flex:1;padding:60px 40px;box-sizing:border-box;max-width:1100px;width:100%;margin:0 auto;display:flex;flex-direction:column;gap:30px;">
+        
+        <div>
+            <a href="./dashboard.html" style="color:#38bdf8;text-decoration:none;font-size:16px;display:inline-flex;align-items:center;gap:8px;font-weight:500;">
+                ← Повернутися до журналу
+            </a>
         </div>
 
-        <div style="margin-top: 30px;">
-            <h3>📊 Успішність групи (Оцінки студентів)</h3>
-            <table style="width: 100%; border-collapse: collapse; margin-top: 15px; background-color: #334155; border-radius: 8px; overflow: hidden;">
-                <thead>
-                    <tr style="background-color: #1e293b; color: #38bdf8; text-align: left;">
-                        <th style="padding: 12px;">Студент</th>
-                        <th style="padding: 12px;">Лабораторні</th>
-                        <th style="padding: 12px;">Тести</th>
-                        <th style="padding: 12px;">Фінальний бал</th>
-                    </tr>
-                </thead>
-                <tbody id="grades-table-body">
-                    </tbody>
-            </table>
+        <div style="background:#1e293b;border:1px solid #334155;padding:30px;border-radius:12px;box-sizing:border-box;width:100%;">
+            <span style="color:#38bdf8;font-size:13px;font-weight:bold;text-transform:uppercase;letter-spacing:1px;">Поточний навчальний блок</span>
+            <h1 style="font-size:32px;font-weight:800;margin:10px 0;line-height:1.2;">
+                Програма занять та практичні завдання
+            </h1>
+            <p style="color:#94a3b8;font-size:16px;margin:0;line-height:1.5;">
+                Тут ви можете ознайомитися з переліком лекцій, завантажити методичні матеріали та перевірити статус виконання лабораторних робіт.
+            </p>
         </div>
-        
-        <a href="dashboard.html" style="display: inline-block; margin-top: 25px; color: #38bdf8; text-decoration: none; font-weight: bold;">← Повернутися до журналу</a>
+
+        <div style="background:#1e293b;border:1px solid #334155;border-radius:12px;overflow:hidden;width:100%;">
+            <div style="padding:20px 25px;border-bottom:1px solid #334155;background:#1e293b;">
+                <h3 style="margin:0;font-size:18px;font-weight:700;">Список завдань модуля</h3>
+            </div>
+            
+            <div style="overflow-x:auto;">
+                <table style="width:100%;border-collapse:collapse;text-align:left;font-size:15px;">
+                    <thead>
+                        <tr style="background:#0f172a;color:#94a3b8;border-bottom:1px solid #334155;">
+                            <th style="padding:15px 25px;font-weight:600;">№</th>
+                            <th style="padding:15px 25px;font-weight:600;">Тема заняття та завдання</th>
+                            <th style="padding:15px 25px;font-weight:600;">Тип</th>
+                            <th style="padding:15px 25px;font-weight:600;">Дедлайн</th>
+                            <th style="padding:15px 25px;font-weight:600;">Статус</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="border-bottom:1px solid #334155;background:#1e293b;">
+                            <td style="padding:18px 25px;color:#94a3b8;font-weight:bold;">1</td>
+                            <td style="padding:18px 25px;">
+                                <div style="font-weight:600;color:#fff;margin-bottom:4px;">Вступна лекція та налаштування оточення</div>
+                                <div style="font-size:13px;color:#94a3b8;">Завдання: Створити репозиторій, зробити перший комміт та надіслати посилання.</div>
+                            </td>
+                            <td style="padding:18px 25px;"><span style="background:#334155;color:#e2e8f0;padding:4px 8px;border-radius:4px;font-size:12px;font-weight:600;">Практична</span></td>
+                            <td style="padding:18px 25px;color:#cbd5e1;">25.05.2026</td>
+                            <td style="padding:18px 25px;"><span style="color:#22c55e;font-weight:bold;display:flex;align-items:center;gap:6px;">✓ Зараховано</span></td>
+                        </tr>
+
+                        <tr style="border-bottom:1px solid #334155;background:#1e293b;">
+                            <td style="padding:18px 25px;color:#94a3b8;font-weight:bold;">2</td>
+                            <td style="padding:18px 25px;">
+                                <div style="font-weight:600;color:#fff;margin-bottom:4px;">Розробка структури та семантична розмітка</div>
+                                <div style="font-size:13px;color:#94a3b8;">Завдання: Побудувати каркас головної сторінки з використанням тегів header, nav, main, footer.</div>
+                            </td>
+                            <td style="padding:18px 25px;"><span style="background:#334155;color:#e2e8f0;padding:4px 8px;border-radius:4px;font-size:12px;font-weight:600;">Лабораторна</span></td>
+                            <td style="padding:18px 25px;color:#cbd5e1;">29.05.2026</td>
+                            <td style="padding:18px 25px;"><span style="color:#eab308;font-weight:bold;display:flex;align-items:center;gap:6px;">⏳ На перевірці</span></td>
+                        </tr>
+
+                        <tr style="border-bottom:1px solid #334155;background:#1e293b;">
+                            <td style="padding:18px 25px;color:#94a3b8;font-weight:bold;">3</td>
+                            <td style="padding:18px 25px;">
+                                <div style="font-weight:600;color:#fff;margin-bottom:4px;">Стилізація компонентів та адаптивна верстка</div>
+                                <div style="font-size:13px;color:#94a3b8;">Завдання: Інтегрувати Flexbox/Grid сітку, налаштувати медіа-запити для мобільних пристроїв.</div>
+                            </td>
+                            <td style="padding:18px 25px;"><span style="background:#334155;color:#e2e8f0;padding:4px 8px;border-radius:4px;font-size:12px;font-weight:600;">Лабораторна</span></td>
+                            <td style="padding:18px 25px;color:#cbd5e1;">03.06.2026</td>
+                            <td style="padding:18px 25px;"><span style="color:#38bdf8;font-weight:bold;display:flex;align-items:center;gap:6px;">⚙ В процесі</span></td>
+                        </tr>
+
+                        <tr style="background:#1e293b;">
+                            <td style="padding:18px 25px;color:#94a3b8;font-weight:bold;">4</td>
+                            <td style="padding:18px 25px;">
+                                <div style="font-weight:600;color:#fff;margin-bottom:4px;">Фінальний захист модуля та тестування</div>
+                                <div style="font-size:13px;color:#94a3b8;">Завдання: Пройти підсумкове комп'ютерне тестування на платформі.</div>
+                            </td>
+                            <td style="padding:18px 25px;"><span style="background:#334155;color:#e2e8f0;padding:4px 8px;border-radius:4px;font-size:12px;font-weight:600;">Тест</span></td>
+                            <td style="padding:18px 25px;color:#cbd5e1;">07.06.2026</td>
+                            <td style="padding:18px 25px;box-sizing:border-box;"><span style="color:#64748b;font-weight:bold;display:flex;align-items:center;gap:6px;">🔒 Недоступно</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div style="background:#1e293b;border:1px solid #334155;padding:25px;border-radius:12px;box-sizing:border-box;width:100%;">
+            <h4 style="margin-top:0;margin-bottom:15px;font-size:16px;font-weight:700;color:#fff;">Загальний прогрес по модулю:</h4>
+            
+            <div style="background:#0f172a;width:100%;height:12px;border-radius:6px;overflow:hidden;margin-bottom:12px;border:1px solid #334155;">
+                <div style="background:linear-gradient(90deg, #38bdf8, #22c55e);width:50%;height:100%;border-radius:6px;"></div>
+            </div>
+            
+            <div style="display:flex;justify-content:space-between;align-items:center;font-size:14px;color:#94a3b8;">
+                <span>Виконано занять: <b>2 з 4</b></span>
+                <span style="color:#22c55e;font-weight:bold;">Успішність: 50%</span>
+            </div>
+        </div>
+
     </main>
 
-    <script src="js/detail.js"></script>
+    <footer style="background:#1e293b;padding:20px;text-align:center;font-size:14px;color:#64748b;border-top:1px solid #334155;box-sizing:border-box;width:100%;">
+        &copy; 2026 Лабораторна робота з веб-технологій. Всі права захищені.
+    </footer>
+
 </body>
 </html>

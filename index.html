@@ -3,26 +3,84 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Електронний журнал — Головна</title>
-    <link rel="stylesheet" href="css/style.css">
+    <title>Edzy - Вхід у систему</title>
 </head>
-<body>
-    <header>
-        <nav>
-            <a href="index.html">Головна</a>
-            <a href="contacts.html">Контакти</a>
-            <a href="sign-in.html">Вхід</a>
-            <a href="dashboard.html">Журнал</a>
-            <a href="admin.html">Адмінка</a>
-        </nav>
-    </header>
-    <main>
-        <h1>Вітаємо в Електронному Журналі оцінювання!</h1>
-        <p>Ця сторінка демонструє динамічний рендер елементів інтерфейсу за допомогою JavaScript.</p>
-        
-        <div id="stats-container"></div>
-    </main>
+<body style="background:#0f172a;color:#fff;font-family:sans-serif;margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;box-sizing:border-box;">
 
-    <script src="js/main.js"></script>
+    <div style="background:#1e293b;border:1px solid #334155;padding:40px 30px;border-radius:12px;width:100%;max-width:420px;box-sizing:border-box;text-align:center;box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);">
+        <h1 style="font-size:28px;font-weight:800;margin:0 0 10px 0;">🔐 Вхід в Edzy</h1>
+        <p style="color:#94a3b8;font-size:14px;margin:0 0 30px 0;">Авторизація за допомогою корпоративного акаунту</p>
+        
+        <div id="errorMessage" style="display:none;background:#7f1d1d;color:#f87171;border:1px solid #f87171;padding:10px;border-radius:8px;font-size:14px;margin-bottom:20px;font-weight:600;text-align:left;">
+            ❌ Неправильна пошта або пароль!
+        </div>
+
+        <form onsubmit="handleLogin(event)" style="display:flex;flex-direction:column;gap:20px;text-align:left;">
+            <div>
+                <label style="color:#94a3b8;font-size:13px;display:block;margin-bottom:8px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;">Корпоративна пошта:</label>
+                <input type="email" id="userEmail" required placeholder="student@edzy.edu" style="width:100%;background:#0f172a;border:1px solid #475569;padding:12px 15px;border-radius:8px;color:#fff;font-size:15px;outline:none;box-sizing:border-box;transition:border-color 0.2s;">
+            </div>
+
+            <div>
+                <label style="color:#94a3b8;font-size:13px;display:block;margin-bottom:8px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;">Пароль:</label>
+                <input type="password" id="userPassword" required placeholder="••••••••" style="width:100%;background:#0f172a;border:1px solid #475569;padding:12px 15px;border-radius:8px;color:#fff;font-size:15px;outline:none;box-sizing:border-box;transition:border-color 0.2s;">
+            </div>
+
+            <button type="submit" style="width:100%;background:#38bdf8;color:#0f172a;border:none;padding:14px;border-radius:8px;font-size:16px;font-weight:700;cursor:pointer;margin-top:10px;transition:background 0.2s;">
+                Увійти в кабінет
+            </button>
+        </form>
+
+        <div style="margin-top:30px;background:#0f172a;border:1px solid #334155;padding:12px;border-radius:8px;text-align:left;">
+            <details style="cursor:pointer;">
+                <summary style="font-size:12px;color:#38bdf8;font-weight:600;">🔑 Демонстраційні акаунти для захисту</summary>
+                <div style="font-size:11px;color:#94a3b8;margin-top:8px;line-height:1.6;">
+                    • <b>Олексій:</b> ivanov@edzy.edu | 1111<br>
+                    • <b>Марія:</b> petrenko@edzy.edu | 2222<br>
+                    • <b>Дмитро:</b> kovalenko@edzy.edu | 3333<br>
+                    • <b>Викладач:</b> admin@edzy.edu | admin
+                </div>
+            </details>
+        </div>
+    </div>
+
+    <script>
+        // База даних користувачів
+        const usersDatabase = [
+            { email: "ivanov@edzy.edu", password: "1111", id: "student1" },
+            { email: "petrenko@edzy.edu", password: "2222", id: "student2" },
+            { email: "kovalenko@edzy.edu", password: "3333", id: "student3" },
+            { email: "admin@edzy.edu", password: "admin", id: "admin" }
+        ];
+
+        function handleLogin(event) {
+            event.preventDefault();
+            
+            const emailInput = document.getElementById('userEmail').value.trim().toLowerCase();
+            const passwordInput = document.getElementById('userPassword').value;
+            const errorDiv = document.getElementById('errorMessage');
+
+            const user = usersDatabase.find(u => u.email === emailInput && u.password === passwordInput);
+
+            if (user) {
+                errorDiv.style.display = 'none';
+                localStorage.setItem('currentUser', user.id);
+                
+                if (user.id === 'admin') {
+                    window.location.href = './admin.html';
+                } else {
+                    window.location.href = './grades.html';
+                }
+            } else {
+                errorDiv.style.display = 'block';
+            }
+        }
+
+        // Анімація фокусу для інпутів
+        document.querySelectorAll('input').forEach(input => {
+            input.addEventListener('focus', () => input.style.borderColor = '#38bdf8');
+            input.addEventListener('blur', () => input.style.borderColor = '#475569');
+        });
+    </script>
 </body>
 </html>

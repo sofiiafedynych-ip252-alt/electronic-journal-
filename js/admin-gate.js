@@ -1,94 +1,90 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const adminTopicsContainer = document.querySelector('.admin-topics-list') || document.getElementById('topics-list') || document.body;
     const addTopicForm = document.getElementById('add-topic-form');
+    const feedbacksContainer = document.getElementById('feedbacks-list');
+    const topicsAdminContainer = document.getElementById('topics-admin-list');
 
-    let allTopics = [];
-
-    // Функція рендерингу для Адмінки (READ + DELETE з CRUD)
+    // 1. РЕНДЕР ПОТОЧНИХ ТЕМ З КНОПКАМИ ВИДАЛЕННЯ
     function renderAdminTopics() {
-        const listElement = document.getElementById('admin-topics-render-list') || adminTopicsContainer;
-        if (!listElement) return;
+        if (!topicsAdminContainer) return;
+        const localTopics = JSON.parse(localStorage.getItem('journal-topics') || '[]');
         
-        // Якщо це загальний контейнер, очистимо його, але збережемо заголовок
-        listElement.innerHTML = '';
-
-        if (allTopics.length === 0) {
-            listElement.innerHTML = `<p style="color: #94a3b8;">Список тем порожній.</p>`;
+        if (localTopics.length === 0) {
+            topicsAdminContainer.innerHTML = '<p style="color: #64748b; font-style: italic;">Немає створених модулів.</p>';
             return;
         }
 
-        allTopics.forEach(topic => {
-            const item = document.createElement('div');
-            item.style.cssText = "display: flex; justify-content: space-between; align-items: center; background: #1e293b; padding: 15px; border-radius: 6px; margin-bottom: 10px; border: 1px solid #334155;";
-            item.innerHTML = `
-                <span style="color: #fff; font-weight: 500;">
-                    ${topic.title} <span style="color: #38bdf8;">(${topic.lessons} занять)</span>
-                </span>
-                <button class="delete-btn" data-id="${topic.id}" style="background-color: #ef4444; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-weight: 600;">
-                    Видалити
-                </button>
-            `;
-            listElement.appendChild(item);
-        });
+        topicsAdminContainer.innerHTML = localTopics.map((topic, index) => `
+            <div style="background: #1e293b; padding: 15px; border-radius: 6px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #334155;">
+                <div>
+                    <strong style="color: #fff;">${topic.title}</strong>
+                    <span style="color: #38bdf8; font-size: 14px; margin-left: 10px;">(${topic.lessons} занять)</span>
+                </div>
+                <button class="delete-btn" data-index="${index}" style="background: #ef4444; color: #fff; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-weight: bold;">Видалити</button>
+            </div>
+        `).join('');
 
-        // Навішуємо події видалення (DELETE)
+        // Навішуємо події видалення
         document.querySelectorAll('.delete-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
-                const idToDelete = parseInt(e.target.getAttribute('data-id'));
-                deleteTopic(idToDelete);
+                const idx = e.target.getAttribute('data-index');
+                if (confirm('Ви дійсно хочете видалити цей тематичний модуль?')) {
+                    let currentTopics = JSON.parse(localStorage.getItem('journal-topics') || '[]');
+                    currentTopics.splice(idx, 1);
+                    localStorage.setItem('journal-topics', JSON.stringify(currentTopics));
+                    renderAdminTopics();
+                }
             });
         });
     }
 
-    // Функція додавання теми (CREATE)
+    // 2. ДОДАВАННЯ НОВОЇ ТЕМИ
     if (addTopicForm) {
         addTopicForm.addEventListener('submit', (e) => {
             e.preventDefault();
-            const title = document.getElementById('topic-title')?.value;
-            const lessons = parseInt(document.getElementById('topic-lessons')?.value || 0);
-            const description = document.getElementById('topic-description')?.value || "Без опису";
+            const titleInput = document.getElementById('topic-title');
+            const descInput = document.getElementById('topic-description');
+            const lessonsInput = document.getElementById('topic-lessons');
 
-            if (!title) return;
+            if (!titleInput.value) return;
 
             const newTopic = {
                 id: Date.now(),
-                title,
-                description,
-                lessons
+                title: titleInput.value,
+                description: descInput.value || "Без опису",
+                lessons: parseInt(lessonsInput.value) || 4
             };
 
-            allTopics.push(newTopic);
-            localStorage.setItem('journal-topics', JSON.stringify(allTopics));
-            renderAdminTopics();
+            let localTopics = JSON.parse(localStorage.getItem('journal-topics') || '[]');
+            localTopics.push(newTopic);
+            localStorage.setItem('journal-topics', JSON.stringify(localTopics));
+            
+            alert('Тематичний модуль успішно додано!');
             addTopicForm.reset();
-            console.log('CRUD: Створено нову тему успішно.');
+            renderAdminTopics();
         });
     }
 
-    // Функція видалення теми (DELETE)
-    function deleteTopic(id) {
-        allTopics = allTopics.filter(t => t.id !== id);
-        localStorage.setItem('journal-topics', JSON.stringify(allTopics));
-        renderAdminTopics();
-        console.log(`CRUD: Тему з ID ${id} видалено.`);
-    }
+    // 3. ВИВЕДЕННЯ ПОВІДОМЛЕНЬ КОРИСТУВАЧІВ
+    function renderIncomingFeedbacks() {
+        if (!feedbacksContainer) return;
+        const localFeedbacks = JSON.parse(localStorage.getItem('contacts-mirror') || '[]');
 
-    // Ініціалізація даних
-    function initAdmin() {
-        const localTopics = localStorage.getItem('journal-topics');
-        if (localTopics) {
-            allTopics = JSON.parse(localTopics);
-        } else {
-            allTopics = [
-                { id: 1, title: "Тематичний модуль 1. Основи роботи з Git та GitHub", lessons: 4 },
-                { id: 2, title: "Тематичний модуль 2. Створення структури проєкту та HTML5-навігація", lessons: 4 },
-                { id: 3, title: "Тематичний модуль 3. Стилізація інтерфейсу за допомогою CSS та адаптивність", lessons: 4 },
-                { id: 4, title: "Тематичний модуль 4. Динамічний рендер елементів за допомогою JavaScript", lessons: 4 }
-            ];
-            localStorage.setItem('journal-topics', JSON.stringify(allTopics));
+        if (localFeedbacks.length === 0) {
+            feedbacksContainer.innerHTML = '<p style="color: #64748b; font-style: italic;">Повідомлень від користувачів поки що немає.</p>';
+            return;
         }
-        renderAdminTopics();
+
+        feedbacksContainer.innerHTML = localFeedbacks.map(fb => `
+            <div style="background: #1e293b; padding: 15px; border-radius: 6px; margin-top: 12px; border: 1px solid #475569;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+                    <strong style="color: #38bdf8;">${fb.name} (${fb.email})</strong>
+                    <span style="color: #64748b; font-size: 12px;">${fb.date || ''}</span>
+                </div>
+                <p style="margin: 0; color: #cbd5e1; font-size: 14px;">${fb.message}</p>
+            </div>
+        `).join('');
     }
 
-    initAdmin();
+    renderAdminTopics();
+    renderIncomingFeedbacks();
 });

@@ -1,46 +1,38 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const detailContainer = document.getElementById('detail-container');
-    const gradesTableBody = document.getElementById('grades-table-body');
-
-    // 1. Отримуємо ID теми з URL-параметрів (наприклад: topic-detail.html?id=1)
+    // 1. Отримуємо ID модуля з параметрів URL-адреси
     const urlParams = new URLSearchParams(window.location.search);
-    const topicId = parseInt(urlParams.get('id'));
+    const topicId = urlParams.get('id');
 
-    // 2. Беремо теми з localStorage
-    const topics = JSON.parse(localStorage.getItem('journal-topics')) || [];
-    const currentTopic = topics.find(t => t.id === topicId);
+    // Шукаємо текстові блоки на сторінці для заміни даних
+    const titleEl = document.getElementById('detail-title');
+    const descEl = document.getElementById('detail-desc');
+    const lessonsEl = document.getElementById('detail-lessons');
+    const progressBar = document.getElementById('progress-bar');
 
-    if (currentTopic && detailContainer) {
-        // Виводимо інформацію про тему
-        detailContainer.innerHTML = `
-            <h1 style="color: #ffffff; margin-bottom: 10px;">${currentTopic.title}</h1>
-            <p style="font-size: 16px; color: #e2e8f0; background-color: #334155; padding: 15px; border-radius: 6px;">
-                <strong>Опис модуля:</strong> ${currentTopic.description}
-            </p>
-            <p style="color: #38bdf8;"><strong>Обсяг курсу:</strong> ${currentTopic.lessons} занять / лабораторних робіт</p>
-        `;
+    if (!topicId) {
+        if (titleEl) titleEl.textContent = "Помилка: Модуль не знайдено";
+        if (descEl) descEl.textContent = "Будь ласка, перейдіть на сторінку журналу та оберіть тему знову.";
+        return;
+    }
 
-        // 3. Генеруємо фейкові оцінки для демонстрації (імітація відомості групи ІП-252)
-        const students = ["Алексєєв В.", "Бойко М.", "Васильєв Д.", "Гриценко О.", "Федунич С."];
-        if (gradesTableBody) {
-            gradesTableBody.innerHTML = '';
-            students.forEach(student => {
-                const labGrade = Math.floor(Math.random() * (50 - 30 + 1)) + 30; // 30-50 балів
-                const testGrade = Math.floor(Math.random() * (50 - 30 + 1)) + 30; // 30-50 балів
-                const total = labGrade + testGrade;
+    // 2. Шукаємо потрібний модуль у localStorage
+    const localTopics = JSON.parse(localStorage.getItem('journal-topics') || '[]');
+    const currentTopic = localTopics.find(topic => topic.id == topicId);
 
-                const tr = document.createElement('tr');
-                tr.style.borderBottom = '1px solid #475569';
-                tr.innerHTML = `
-                    <td style="padding: 12px; color: white;"><strong>${student}</strong></td>
-                    <td style="padding: 12px; color: #94a3b8;">${labGrade} / 50</td>
-                    <td style="padding: 12px; color: #94a3b8;">${testGrade} / 50</td>
-                    <td style="padding: 12px; color: #10b981; font-weight: bold;">${total} балів</td>
-                `;
-                gradesTableBody.appendChild(tr);
-            });
+    // 3. Якщо такий модуль існує — динамічно підставляємо дані
+    if (currentTopic) {
+        if (titleEl) titleEl.textContent = currentTopic.title;
+        if (descEl) descEl.textContent = currentTopic.description || "Опис для цього модуля поки що відсутній.";
+        if (lessonsEl) lessonsEl.textContent = `Всього заплановано: ${currentTopic.lessons || 4} занять`;
+        
+        // Робимо красиву анімацію прогрес-бару (графіка занять)
+        if (progressBar) {
+            setTimeout(() => {
+                progressBar.style.width = '100%';
+            }, 200);
         }
-    } else if (detailContainer) {
-        detailContainer.innerHTML = `<p style="color: #ef4444;">❌ Модуль не знайдено або ID вказано неправильно.</p>`;
+    } else {
+        if (titleEl) titleEl.textContent = "Модуль відсутній";
+        if (descEl) descEl.textContent = "Запитуваний модуль був видалений з бази даних адмін-панелі.";
     }
 });
