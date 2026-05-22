@@ -3,13 +3,55 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edzy - Журнал оцінок</title>
-    <link rel="stylesheet" href="./css/style.css">
+    <title>Edzy - Оцінки та Успішність</title>
+    <style>
+        /* Стилі для світлої теми */
+        body.light-theme {
+            background: #f8fafc !important;
+            color: #0f172a !important;
+        }
+        body.light-theme header, body.light-theme footer {
+            background: #ffffff !important;
+            border-color: #cbd5e1 !important;
+        }
+        body.light-theme nav a {
+            color: #64748b !important;
+        }
+        body.light-theme nav a[style*="font-weight:bold"] {
+            color: #0284c7 !important;
+        }
+        body.light-theme .grades-card, body.light-theme .admin-panel-card {
+            background: #ffffff !important;
+            border-color: #cbd5e1 !important;
+        }
+        body.light-theme table {
+            border-color: #cbd5e1 !important;
+        }
+        body.light-theme th {
+            background: #f1f5f9 !important;
+            color: #475569 !important;
+        }
+        body.light-theme td {
+            border-color: #e2e8f0 !important;
+            color: #334155 !important;
+        }
+        body.light-theme .bg-dark-box {
+            background: #f1f5f9 !important;
+        }
+        body.light-theme select, body.light-theme input {
+            background: #ffffff !important;
+            color: #0f172a !important;
+            border-color: #cbd5e1 !important;
+        }
+    </style>
 </head>
 <body style="background:#0f172a;color:#fff;font-family:sans-serif;margin:0;min-height:100vh;display:flex;flex-direction:column;">
 
-    <header style="background:#1e293b;padding:15px 40px;display:flex;justify-content:flex-end;align-items:center;border-bottom:1px solid #334155;box-sizing:border-box;width:100%;">
-        <nav style="display:flex;gap:30px;align-items:center;">
+    <header style="background:#1e293b;padding:15px 40px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #334155;box-sizing:border-box;width:100%;">
+        <div style="font-weight:800; font-size:20px; color:#38bdf8;">Edzy.</div>
+        <nav style="display:flex;gap:25px;align-items:center;">
+            <button id="themeToggleBtn" onclick="toggleTheme()" style="background:none; border:1px solid #475569; color:#fff; padding:6px 12px; border-radius:20px; cursor:pointer; font-size:14px;">🌙 Темна</button>
+            <span style="color:#475569;">|</span>
             <a href="./index.html" onclick="localStorage.removeItem('currentUser')" style="color:#94a3b8;text-decoration:none;font-size:16px;">Вихід</a>
             <a href="./contacts.html" style="color:#94a3b8;text-decoration:none;font-size:16px;">Контакти</a>
             <a href="./dashboard.html" style="color:#94a3b8;text-decoration:none;font-size:16px;">Журнал</a>
@@ -18,224 +60,305 @@
         </nav>
     </header>
 
-    <main style="flex:1;padding:60px 40px;box-sizing:border-box;max-width:1100px;width:100%;margin:0 auto;display:flex;flex-direction:column;gap:35px;">
+    <main style="flex:1;padding:40px;box-sizing:border-box;max-width:1200px;width:100%;margin:0 auto;">
         
-        <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:20px;width:100%;">
-            <div>
-                <h1 style="font-size:32px;font-weight:800;margin:0 0 10px 0;line-height:1.2;">
-                    📊 Електронний журнал оцінок
-                </h1>
-                <p style="color:#94a3b8;font-size:16px;margin:0;">
-                    Студент: <span id="studentNameDisplay" style="color:#fff;font-weight:600;">Завантаження...</span> | Група: <span id="studentGroupDisplay" style="color:#fff;font-weight:600;">...</span>
-                </p>
-            </div>
-            
-            <div style="background:#1e293b;border:1px solid #334155;padding:15px 25px;border-radius:10px;display:flex;gap:30px;box-sizing:border-box;">
-                <div style="text-align:center;">
-                    <div style="font-size:12px;color:#94a3b8;font-weight:bold;text-transform:uppercase;margin-bottom:5px;">Середній бал</div>
-                    <div id="avgScoreDisplay" style="font-size:24px;font-weight:800;color:#22c55e;">0 / 100</div>
+        <div id="studentView" style="display:none; flex-direction:column; gap:30px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; background:#1e293b; padding:25px; border-radius:12px; border:1px solid #334155;" class="grades-card">
+                <div>
+                    <h1 style="font-size:28px; font-weight:800; margin:0; display:flex; align-items:center; gap:10px;">📚 Електронний журнал оцінок</h1>
+                    <p style="color:#94a3b8; margin:8px 0 0 0; font-size:16px;">
+                        Студент: <span id="studentName" style="color:#fff; font-weight:bold;">...</span> | 
+                        Група: <span id="studentGroup" style="color:#38bdf8; font-weight:bold;">...</span>
+                    </p>
                 </div>
-                <div style="width:1px;background:#334155;height:40px;align-self:center;"></div>
-                <div style="text-align:center;">
-                    <div style="font-size:12px;color:#94a3b8;font-weight:bold;text-transform:uppercase;margin-bottom:5px;">ECTS</div>
-                    <div id="ectsScoreDisplay" style="font-size:24px;font-weight:800;color:#38bdf8;">F</div>
+                <div style="display:flex; gap:20px;">
+                    <div style="background:#0f172a; padding:12px 20px; border-radius:8px; text-align:center;" class="bg-dark-box">
+                        <div style="font-size:11px; color:#64748b; font-weight:bold; text-transform:uppercase;">Середній бал</div>
+                        <div id="studentAverage" style="font-size:22px; font-weight:bold; color:#22c55e; margin-top:4px;">0 / 100</div>
+                    </div>
+                    <div style="background:#0f172a; padding:12px 20px; border-radius:8px; text-align:center; min-width:70px;" class="bg-dark-box">
+                        <div style="font-size:11px; color:#64748b; font-weight:bold; text-transform:uppercase;">ECTS</div>
+                        <div id="studentEcts" style="font-size:22px; font-weight:bold; color:#38bdf8; margin-top:4px;">-</div>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <div style="background:#1e293b;border:1px solid #334155;border-radius:12px;overflow:hidden;width:100%;">
-            <div style="padding:20px 25px;border-bottom:1px solid #334155;background:#1e293b;">
-                <h3 style="margin:0;font-size:18px;font-weight:700;">Відомість успішності (Семестровий контроль)</h3>
-            </div>
-            
-            <div style="overflow-x:auto;">
-                <table style="width:100%;border-collapse:collapse;text-align:left;font-size:15px;">
+            <div style="background:#1e293b; border:1px solid #334155; border-radius:12px; overflow:hidden;" class="grades-card">
+                <div style="padding:20px; font-weight:bold; font-size:18px; border-bottom:1px solid #334155;">Відомість успішності (Семестровий контроль)</div>
+                <table style="width:100%; border-collapse:collapse; text-align:left;">
                     <thead>
-                        <tr style="background:#0f172a;color:#94a3b8;border-bottom:1px solid #334155;">
-                            <th style="padding:15px 25px;font-weight:600;">Навчальний модуль</th>
-                            <th style="padding:15px 25px;font-weight:600;text-align:center;">Практичні (max 30)</th>
-                            <th style="padding:15px 25px;font-weight:600;text-align:center;">Лабораторні (max 40)</th>
-                            <th style="padding:15px 25px;font-weight:600;text-align:center;">Тести (max 30)</th>
-                            <th style="padding:15px 25px;font-weight:600;text-align:center;">Разом</th>
-                            <th style="padding:15px 25px;font-weight:600;text-align:center;">Оцінка ECTS</th>
+                        <tr style="background:#1e293b; color:#94a3b8; font-size:14px; border-bottom:1px solid #334155;">
+                            <th style="padding:15px 20px;">Навчальний модуль</th>
+                            <th style="padding:15px 20px; text-align:center;">Практичні (max 30)</th>
+                            <th style="padding:15px 20px; text-align:center;">Лабораторні (max 40)</th>
+                            <th style="padding:15px 20px; text-align:center;">Тести (max 30)</th>
+                            <th style="padding:15px 20px; text-align:center;">Разом</th>
+                            <th style="padding:15px 20px; text-align:center;">Статус / Робота</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr style="border-bottom:1px solid #334155;background:#1e293b;">
-                            <td style="padding:20px 25px;font-weight:600;color:#fff;">Модуль 1. Основи роботи з Git та GitHub</td>
-                            <td id="m1_p" style="padding:20px 25px;text-align:center;color:#e2e8f0;">—</td>
-                            <td id="m1_l" style="padding:20px 25px;text-align:center;color:#e2e8f0;">—</td>
-                            <td id="m1_t" style="padding:20px 25px;text-align:center;color:#e2e8f0;">—</td>
-                            <td id="m1_tot" style="padding:20px 25px;text-align:center;font-weight:bold;color:#eab308;">0</td>
-                            <td id="m1_badge" style="padding:20px 25px;text-align:center;"></td>
-                        </tr>
-
-                        <tr style="border-bottom:1px solid #334155;background:#1e293b;">
-                            <td style="padding:20px 25px;font-weight:600;color:#fff;">Модуль 2. Структура проєкту та HTML5</td>
-                            <td id="m2_p" style="padding:20px 25px;text-align:center;color:#e2e8f0;">—</td>
-                            <td id="m2_l" style="padding:20px 25px;text-align:center;color:#e2e8f0;">—</td>
-                            <td id="m2_t" style="padding:20px 25px;text-align:center;color:#e2e8f0;">—</td>
-                            <td id="m2_tot" style="padding:20px 25px;text-align:center;font-weight:bold;color:#eab308;">0</td>
-                            <td id="m2_badge" style="padding:20px 25px;text-align:center;"></td>
-                        </tr>
-
-                        <tr style="border-bottom:1px solid #334155;background:#1e293b;">
-                            <td style="padding:20px 25px;font-weight:600;color:#fff;">Модуль 3. Стилізація CSS та адаптивність</td>
-                            <td id="m3_p" style="padding:20px 25px;text-align:center;color:#e2e8f0;">—</td>
-                            <td id="m3_l" style="padding:20px 25px;text-align:center;color:#e2e8f0;">—</td>
-                            <td id="m3_t" style="padding:20px 25px;text-align:center;color:#e2e8f0;">—</td>
-                            <td id="m3_tot" style="padding:20px 25px;text-align:center;font-weight:bold;color:#22c55e;">0</td>
-                            <td id="m3_badge" style="padding:20px 25px;text-align:center;"></td>
-                        </tr>
-
-                        <tr style="background:#1e293b;">
-                            <td style="padding:20px 25px;font-weight:600;color:#fff;">Модуль 4. Динамічний рендер через JavaScript</td>
-                            <td id="m4_p" style="padding:20px 25px;text-align:center;color:#94a3b8;">—</td>
-                            <td id="m4_l" style="padding:20px 25px;text-align:center;color:#94a3b8;">—</td>
-                            <td id="m4_t" style="padding:20px 25px;text-align:center;color:#94a3b8;">—</td>
-                            <td id="m4_tot" style="padding:20px 25px;text-align:center;font-weight:bold;color:#eab308;">0</td>
-                            <td id="m4_badge" style="padding:20px 25px;text-align:center;"></td>
-                        </tr>
-                    </tbody>
+                    <tbody id="studentGradesTable">
+                        </tbody>
                 </table>
             </div>
         </div>
 
-        <div style="background:#1e293b;border:1px solid #334155;padding:20px 25px;border-radius:8px;box-sizing:border-box;width:100%;display:flex;align-items:center;gap:15px;">
-            <span style="font-size:20px;">💡</span>
-            <p style="color:#94a3b8;font-size:14px;margin:0;line-height:1.5;">
-                Бали оновлюються автоматично після того, як викладач перевірить ваші роботи в Панелі адміністратора. Для отримання автомату необхідно набрати не менше <b>75 балів</b> сумарно за кожен модуль.
-            </p>
+        <div id="adminView" style="display:none; flex-direction:column; gap:35px;">
+            <div style="background:#1e293b; padding:25px; border-radius:12px; border:1px solid #334155;" class="admin-panel-card">
+                <h1 style="font-size:28px; font-weight:800; margin:0; color:#38bdf8;">⚙️ Панель управління оцінками</h1>
+                <p style="color:#94a3b8; margin:8px 0 0 0; font-size:16px;">Режим викладача: виставлення поточних балів та перегляд підсумкової відомості.</p>
+            </div>
+
+            <div style="background:#1e293b; border:1px solid #334155; border-radius:12px; padding:30px; box-sizing:border-box;" class="admin-panel-card">
+                <h3 style="margin-top:0; margin-bottom:25px; font-size:20px; color:#facc15; display:flex; align-items:center; gap:8px;">🎓 Виставлення оцінок</h3>
+                
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px; margin-bottom:25px;">
+                    <div>
+                        <label style="display:block; color:#94a3b8; margin-bottom:8px; font-size:14px; font-weight:600;">Студент</label>
+                        <select id="studentSelect" style="width:100%; background:#0f172a; color:#fff; border:1px solid #334155; padding:12px; border-radius:8px; font-size:15px; outline:none;">
+                            <option value="student1">Олексій Іванов (ПІ-23-1)</option>
+                            <option value="student2">Марія Петренко (ПІ-23-1)</option>
+                            <option value="student3">Дмитро Коваленко (ПІ-23-2)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label style="display:block; color:#94a3b8; margin-bottom:8px; font-size:14px; font-weight:600;">Модуль</label>
+                        <select id="moduleSelect" style="width:100%; background:#0f172a; color:#fff; border:1px solid #334155; padding:12px; border-radius:8px; font-size:15px; outline:none;">
+                            </select>
+                    </div>
+                </div>
+
+                <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:20px; margin-bottom:30px;">
+                    <input type="number" id="gradePracticals" placeholder="Практичні (max 30)" min="0" max="30" style="width:100%; background:#0f172a; color:#fff; border:1px solid #334155; padding:12px; border-radius:8px; font-size:15px; box-sizing:border-box; outline:none;">
+                    <input type="number" id="gradeLabs" placeholder="Лабораторні (max 40)" min="0" max="40" style="width:100%; background:#0f172a; color:#fff; border:1px solid #334155; padding:12px; border-radius:8px; font-size:15px; box-sizing:border-box; outline:none;">
+                    <input type="number" id="gradeTests" placeholder="Тести (max 30)" min="0" max="30" style="width:100%; background:#0f172a; color:#fff; border:1px solid #334155; padding:12px; border-radius:8px; font-size:15px; box-sizing:border-box; outline:none;">
+                </div>
+
+                <button onclick="saveAdminGrades()" style="width:100%; background:#22c55e; color:#0f172a; border:none; padding:14px; border-radius:8px; font-size:16px; font-weight:bold; cursor:pointer;">
+                    💾 Зберегти бали
+                </button>
+            </div>
+
+            <div style="background:#1e293b; border:1px solid #334155; border-radius:12px; overflow:hidden;" class="admin-panel-card">
+                <div style="padding:20px; font-weight:bold; font-size:18px; border-bottom:1px solid #334155;">📋 Зведений журнал оцінок усіх груп</div>
+                <table style="width:100%; border-collapse:collapse; text-align:left;">
+                    <thead>
+                        <tr style="background:#273549; color:#94a3b8; font-size:14px; border-bottom:1px solid #334155;">
+                            <th style="padding:15px 20px;">Студент</th>
+                            <th style="padding:15px 20px; text-align:center;">Група</th>
+                            <th style="padding:15px 20px; text-align:center;">Модуль 1</th>
+                            <th style="padding:15px 20px; text-align:center;">Модуль 2</th>
+                            <th style="padding:15px 20px; text-align:center;">Модуль 3</th>
+                            <th style="padding:15px 20px; text-align:center;">Модуль 4</th>
+                            <th style="padding:15px 20px; text-align:center; background:rgba(56,189,248,0.1); color:#38bdf8;">Середній бал</th>
+                        </tr>
+                    </thead>
+                    <tbody id="adminGradesTable">
+                        </tbody>
+                </table>
+            </div>
         </div>
 
     </main>
 
     <footer style="background:#1e293b;padding:20px;text-align:center;font-size:14px;color:#64748b;border-top:1px solid #334155;box-sizing:border-box;width:100%;">
-        &copy; 2026 Лабораторна робота з веб-технологій. Всі права захищені.
+        &copy; 2026 Edzy. Всі права захищені.
     </footer>
 
     <script>
-        const studentProfiles = {
-            student1: { name: "Олексій Іванов", group: "ПІ-23-1" },
-            student2: { name: "Марія Петренко", group: "ПІ-23-1" },
-            student3: { name: "Дмитро Коваленко", group: "ПІ-23-2" }
+        // База даних
+        let mockDatabase = JSON.parse(localStorage.getItem('academicGradesDB')) || {
+            'student1': { name: 'Олексій Іванов', group: 'ПІ-23-1', grades: [95, 88, 97, 0], submittedLinks: ["","","",""] },
+            'student2': { name: 'Марія Петренко', group: 'ПІ-23-1', grades: [90, 92, 85, 95], submittedLinks: ["","","",""] },
+            'student3': { name: 'Дмитро Коваленко', group: 'ПІ-23-2', grades: [75, 80, 70, 65], submittedLinks: ["","","",""] }
         };
 
-        const defaultIvanovData = {
-            m1: { prac: 28, lab: 38, test: 29, total: 95 },
-            m2: { prac: 27, lab: 36, test: 25, total: 88 },
-            m3: { prac: 30, lab: 39, test: 28, total: 97 },
-            m4: { prac: '—', lab: '—', test: '—', total: 0 }
-        };
+        let modulesList = JSON.parse(localStorage.getItem('customTopicsDB')) || [
+            { id: 1, title: "Модуль 1. Основи роботи з Git та GitHub" },
+            { id: 2, title: "Модуль 2. Структура проєкту та HTML5" },
+            { id: 3, title: "Модуль 3. Стилізація CSS та адаптивність" },
+            { id: 4, title: "Модуль 4. Динамічний рендер через JavaScript" }
+        ];
 
-        function getBadgeHTML(score, isDataExist) {
-            if (!isDataExist) return '<span style="background:#334155;color:#94a3b8;padding:4px 10px;border-radius:6px;font-size:13px;font-weight:bold;">Ще не здано</span>';
-            if (score >= 90) return '<span style="background:#14532d;color:#4ade80;padding:4px 10px;border-radius:6px;font-size:13px;font-weight:bold;">Відмінно (A)</span>';
-            if (score >= 82) return '<span style="background:#1e3a8a;color:#60a5fa;padding:4px 10px;border-radius:6px;font-size:13px;font-weight:bold;">Добре (B)</span>';
-            if (score >= 74) return '<span style="background:#1e3a8a;color:#60a5fa;padding:4px 10px;border-radius:6px;font-size:13px;font-weight:bold;">Добре (C)</span>';
-            if (score >= 64) return '<span style="background:#78350f;color:#fbbf24;padding:4px 10px;border-radius:6px;font-size:13px;font-weight:bold;">Задовільно (D)</span>';
-            if (score >= 60) return '<span style="background:#78350f;color:#fbbf24;padding:4px 10px;border-radius:6px;font-size:13px;font-weight:bold;">Задовільно (E)</span>';
-            return '<span style="background:#7f1d1d;color:#f87171;padding:4px 10px;border-radius:6px;font-size:13px;font-weight:bold;">Незараховано (F)</span>';
-        }
+        function initGradesPage() {
+            applySavedTheme();
+            const currentUser = localStorage.getItem('currentUser');
 
-        function getEctsLetter(score) {
-            if (score >= 90) return 'A';
-            if (score >= 82) return 'B';
-            if (score >= 74) return 'C';
-            if (score >= 64) return 'D';
-            if (score >= 60) return 'E';
-            return 'F';
-        }
+            if (!currentUser) { window.location.href = './index.html'; return; }
 
-        function loadSessionUserGrades() {
-            const userRole = localStorage.getItem('currentUser');
+            // Наповнюємо селект модулів для адміна
+            const select = document.getElementById('moduleSelect');
+            select.innerHTML = '';
+            modulesList.forEach((m, idx) => {
+                select.innerHTML += `<option value="${idx}">${m.title}</option>`;
+            });
 
-            // Якщо користувач взагалі не увійшов, повертаємо на авторизацію
-            if (!userRole) {
-                window.location.href = './index.html';
-                return;
-            }
-
-            // Якщо увійшов адмін, показуємо йому кнопку адмінки і завантажуємо дефолтного студента
-            let currentStudent = userRole;
-            if (userRole === 'admin') {
+            if (currentUser === 'admin') {
                 document.getElementById('adminLink').style.display = 'block';
-                currentStudent = 'student1'; 
+                document.getElementById('adminView').style.display = 'flex';
+                document.getElementById('studentView').style.display = 'none';
+                renderAdminTable();
+            } else {
+                document.getElementById('adminView').style.display = 'none';
+                document.getElementById('studentView').style.display = 'flex';
+                renderStudentTable(currentUser);
             }
-
-            // Виводимо текстові дані студента
-            const profile = studentProfiles[currentStudent] || { name: "Олексій Іванов", group: "ПІ-23-1" };
-            document.getElementById('studentNameDisplay').innerText = profile.name;
-            document.getElementById('studentGroupDisplay').innerText = profile.group;
-
-            let sumOfAllModules = 0;
-            let gradedModulesCount = 0;
-
-            for (let m = 1; m <= 4; m++) {
-                const pCell = document.getElementById(`m${m}_p`);
-                const lCell = document.getElementById(`m${m}_l`);
-                const tCell = document.getElementById(`m${m}_t`);
-                const totCell = document.getElementById(`m${m}_tot`);
-                const badgeCell = document.getElementById(`m${m}_badge`);
-
-                const storedData = localStorage.getItem(`grades_${currentStudent}_m${m}`);
-
-                if (storedData) {
-                    const parsed = JSON.parse(storedData);
-                    const p = parseInt(parsed.prac) || 0;
-                    const l = parseInt(parsed.lab) || 0;
-                    const t = parseInt(parsed.test) || 0;
-                    const total = p + l + t;
-
-                    pCell.innerText = p; pCell.style.color = '#e2e8f0';
-                    lCell.innerText = l; lCell.style.color = '#e2e8f0';
-                    tCell.innerText = t; tCell.style.color = '#e2e8f0';
-                    totCell.innerText = total; totCell.style.color = '#22c55e';
-                    badgeCell.innerHTML = getBadgeHTML(total, true);
-
-                    sumOfAllModules += total;
-                    gradedModulesCount++;
-                } else {
-                    if (currentStudent === 'student1') {
-                        const def = defaultIvanovData[`m${m}`];
-                        pCell.innerText = def.prac; pCell.style.color = def.prac === '—' ? '#94a3b8' : '#e2e8f0';
-                        lCell.innerText = def.lab; lCell.style.color = def.lab === '—' ? '#94a3b8' : '#e2e8f0';
-                        tCell.innerText = def.test; tCell.style.color = def.test === '—' ? '#94a3b8' : '#e2e8f0';
-                        totCell.innerText = def.total;
-                        totCell.style.color = def.total > 0 ? '#22c55e' : '#eab308';
-                        badgeCell.innerHTML = getBadgeHTML(def.total, def.total > 0);
-
-                        if (def.total > 0) {
-                            sumOfAllModules += def.total;
-                            gradedModulesCount++;
-                        }
-                    } else {
-                        pCell.innerText = '—'; pCell.style.color = '#94a3b8';
-                        lCell.innerText = '—'; lCell.style.color = '#94a3b8';
-                        tCell.innerText = '—'; tCell.style.color = '#94a3b8';
-                        totCell.innerText = '0'; totCell.style.color = '#eab308';
-                        badgeCell.innerHTML = getBadgeHTML(0, false);
-                    }
-                }
-            }
-
-            let finalAvg = 0;
-            if (currentStudent === 'student1' && gradedModulesCount === 3) {
-                finalAvg = 92.5; 
-            } else if (gradedModulesCount > 0) {
-                finalAvg = parseFloat((sumOfAllModules / gradedModulesCount).toFixed(1));
-            }
-
-            const avgTextEl = document.getElementById('avgScoreDisplay');
-            avgTextEl.innerText = `${finalAvg} / 100`;
-            document.getElementById('ectsScoreDisplay').innerText = getEctsLetter(Math.round(finalAvg));
-
-            if (finalAvg >= 90) avgTextEl.style.color = '#22c55e';
-            else if (finalAvg >= 60) avgTextEl.style.color = '#38bdf8';
-            else avgTextEl.style.color = '#f87171';
         }
 
-        window.onload = loadSessionUserGrades;
+        // СТУДЕНТ: ЗДАТИ РОБОТУ
+        function submitStudentWork(studentId, moduleIndex) {
+            const input = document.getElementById(`linkInput_${moduleIndex}`);
+            const linkValue = input.value.trim();
+
+            if (!linkValue) { alert('Будь ласка, вставте посилання на роботу!'); return; }
+
+            if (!mockDatabase[studentId].submittedLinks) {
+                mockDatabase[studentId].submittedLinks = ["", "", "", ""];
+            }
+
+            mockDatabase[studentId].submittedLinks[moduleIndex] = linkValue;
+            localStorage.setItem('academicGradesDB', JSON.stringify(mockDatabase));
+
+            alert('Роботу успішно надіслано на перевірку!');
+            renderStudentTable(studentId);
+        }
+
+        // РЕНДЕР СТУДЕНТА
+        function renderStudentTable(studentId) {
+            const student = mockDatabase[studentId] || mockDatabase['student1'];
+            document.getElementById('studentName').innerText = student.name;
+            document.getElementById('studentGroup').innerText = student.group;
+
+            const tbody = document.getElementById('studentGradesTable');
+            tbody.innerHTML = '';
+
+            let totalSum = 0;
+            let submittedModules = 0;
+
+            if (!student.submittedLinks) student.submittedLinks = ["", "", "", ""];
+
+            modulesList.forEach((mod, index) => {
+                // Захист на випадок розширення масиву тем адміном
+                if(student.grades[index] === undefined) student.grades[index] = 0;
+                if(student.submittedLinks[index] === undefined) student.submittedLinks[index] = "";
+
+                const totalGrade = student.grades[index];
+                totalSum += totalGrade;
+                if(totalGrade > 0) submittedModules++;
+
+                let practicals = totalGrade > 0 ? Math.round(totalGrade * 0.3) : '—';
+                let labs = totalGrade > 0 ? Math.round(totalGrade * 0.4) : '—';
+                let tests = totalGrade > 0 ? Math.round(totalGrade * 0.3) : '—';
+                
+                let statusHtml = '';
+                const savedLink = student.submittedLinks[index];
+
+                if (totalGrade > 0) {
+                    statusHtml = `<span style="color:#22c55e; background:rgba(34,197,94,0.1); padding:4px 10px; border-radius:6px; font-size:13px; font-weight:bold;">Зараховано (балів: ${totalGrade})</span>`;
+                } else if (savedLink) {
+                    statusHtml = `<span style="color:#facc15; background:rgba(250,204,21,0.1); padding:4px 10px; border-radius:6px; font-size:13px; font-weight:bold;">На перевірці ⏳</span>`;
+                } else {
+                    statusHtml = `
+                        <div style="display:flex; gap:8px; justify-content:center;">
+                            <input type="text" id="linkInput_${index}" placeholder="Посилання GitHub/Диск" style="background:#0f172a; color:#fff; border:1px solid #334155; padding:4px 8px; border-radius:6px; font-size:12px; width:150px; outline:none;">
+                            <button onclick="submitStudentWork('${studentId}', ${index})" style="background:#38bdf8; color:#0f172a; border:none; padding:4px 10px; border-radius:6px; font-size:12px; font-weight:bold; cursor:pointer;">Здати</button>
+                        </div>
+                    `;
+                }
+
+                tbody.innerHTML += `
+                    <tr style="border-bottom:1px solid #334155;">
+                        <td style="padding:15px 20px; font-weight:bold;">${mod.title}</td>
+                        <td style="padding:15px 20px; text-align:center;">${practicals}</td>
+                        <td style="padding:15px 20px; text-align:center;">${labs}</td>
+                        <td style="padding:15px 20px; text-align:center;">${tests}</td>
+                        <td style="padding:15px 20px; text-align:center; font-weight:bold;">${totalGrade > 0 ? totalGrade : '—'}</td>
+                        <td style="padding:15px 20px; text-align:center;">${statusHtml}</td>
+                    </tr>
+                `;
+            });
+
+            const avg = submittedModules > 0 ? Math.round(totalSum / submittedModules) : 0;
+            document.getElementById('studentAverage').innerText = `${avg} / 100`;
+            
+            let finalEcts = 'F';
+            if(avg >= 90) finalEcts = 'A';
+            else if(avg >= 82) finalEcts = 'B';
+            else if(avg >= 75) finalEcts = 'C';
+            else if(avg >= 64) finalEcts = 'D';
+            else if(avg >= 60) finalEcts = 'E';
+            document.getElementById('studentEcts').innerText = finalEcts;
+        }
+
+        // АДМІН: ЗБЕРЕГТИ БАЛИ
+        function saveAdminGrades() {
+            const studentId = document.getElementById('studentSelect').value;
+            const moduleIndex = parseInt(document.getElementById('moduleSelect').value);
+            
+            const practicals = parseInt(document.getElementById('gradePracticals').value) || 0;
+            const labs = parseInt(document.getElementById('gradeLabs').value) || 0;
+            const tests = parseInt(document.getElementById('gradeTests').value) || 0;
+
+            const totalModuleGrade = Math.min(100, practicals + labs + tests);
+
+            if(totalModuleGrade > 0) {
+                mockDatabase[studentId].grades[moduleIndex] = totalModuleGrade;
+                localStorage.setItem('academicGradesDB', JSON.stringify(mockDatabase));
+                
+                document.getElementById('gradePracticals').value = '';
+                document.getElementById('gradeLabs').value = '';
+                document.getElementById('gradeTests').value = '';
+                
+                alert('Бали успішно виставлено!');
+                renderAdminTable();
+            } else {
+                alert('Будь ласка, введіть коректні бали.');
+            }
+        }
+
+        // РЕНДЕР АДМІН-ТАБЛИЦІ
+        function renderAdminTable() {
+            const tbody = document.getElementById('adminGradesTable');
+            tbody.innerHTML = '';
+
+            Object.keys(mockDatabase).forEach(studentKey => {
+                const student = mockDatabase[studentKey];
+                
+                let sum = 0;
+                let count = 0;
+                modulesList.forEach((_, idx) => {
+                    let g = student.grades[idx] || 0;
+                    sum += g;
+                    count++;
+                });
+                const avg = count > 0 ? Math.round(sum / count) : 0;
+
+                tbody.innerHTML += `
+                    <tr style="border-bottom:1px solid #334155;">
+                        <td style="padding:15px 20px; font-weight:bold; color:#fff;">👤 ${student.name}</td>
+                        <td style="padding:15px 20px; text-align:center;"><span style="background:#0f172a; padding:4px 8px; border-radius:6px; font-size:12px; color:#38bdf8;">${student.group}</span></td>
+                        <td style="padding:15px 20px; text-align:center; color:${(student.grades[0]||0) >= 60 ? '#22c55e' : '#ef4444'}; font-weight:600;">${student.grades[0]||0}</td>
+                        <td style="padding:15px 20px; text-align:center; color:${(student.grades[1]||0) >= 60 ? '#22c55e' : '#ef4444'}; font-weight:600;">${student.grades[1]||0}</td>
+                        <td style="padding:15px 20px; text-align:center; color:${(student.grades[2]||0) >= 60 ? '#22c55e' : '#ef4444'}; font-weight:600;">${student.grades[2]||0}</td>
+                        <td style="padding:15px 20px; text-align:center; color:${(student.grades[3]||0) >= 60 ? '#22c55e' : '#ef4444'}; font-weight:600;">${student.grades[3]||0}</td>
+                        <td style="padding:15px 20px; text-align:center; font-weight:800; background:rgba(56,189,248,0.05); color:#22c55e; font-size:16px;">${avg} ⭐</td>
+                    </tr>
+                `;
+            });
+        }
+
+        function applySavedTheme() {
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            const btn = document.getElementById('themeToggleBtn');
+            if (savedTheme === 'light') { document.body.classList.add('light-theme'); btn.innerHTML = '☀️ Світла'; }
+            else { document.body.classList.remove('light-theme'); btn.innerHTML = '🌙 Темна'; }
+        }
+
+        function toggleTheme() {
+            document.body.classList.contains('light-theme') ? localStorage.setItem('theme', 'dark') : localStorage.setItem('theme', 'light');
+            applySavedTheme();
+        }
+
+        window.onload = initGradesPage;
     </script>
 </body>
 </html>

@@ -4,21 +4,47 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edzy - Панель адміністратора</title>
+    <style>
+        /* Стилі для підтримки світлої теми */
+        body.light-theme {
+            background: #f8fafc !important;
+            color: #0f172a !important;
+        }
+        body.light-theme header, body.light-theme footer {
+            background: #ffffff !important;
+            border-color: #cbd5e1 !important;
+        }
+        body.light-theme nav a {
+            color: #64748b !important;
+        }
+        body.light-theme nav a[style*="font-weight:bold"] {
+            color: #0284c7 !important;
+        }
+        body.light-theme .admin-card {
+            background: #ffffff !important;
+            border-color: #cbd5e1 !important;
+        }
+        body.light-theme select, body.light-theme input {
+            background: #ffffff !important;
+            color: #0f172a !important;
+            border-color: #cbd5e1 !important;
+        }
+        body.light-theme .bg-dark-box {
+            background: #f1f5f9 !important;
+            border-color: #cbd5e1 !important;
+        }
+        body.light-theme .text-white-fix {
+            color: #0f172a !important;
+        }
+    </style>
 </head>
 <body style="background:#0f172a;color:#fff;font-family:sans-serif;margin:0;min-height:100vh;display:flex;flex-direction:column;">
 
-    <script>
-        (function enforceAdminSecurity() {
-            const userRole = localStorage.getItem('currentUser');
-            if (!userRole || userRole !== 'admin') {
-                alert('🚨 Доступ обмежено! Студенти не мають прав для перегляду Панелі Адміністратора.');
-                window.location.href = './index.html';
-            }
-        })();
-    </script>
-
-    <header style="background:#1e293b;padding:15px 40px;display:flex;justify-content:flex-end;align-items:center;border-bottom:1px solid #334155;box-sizing:border-box;width:100%;">
-        <nav style="display:flex;gap:30px;align-items:center;">
+    <header style="background:#1e293b;padding:15px 40px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #334155;box-sizing:border-box;width:100%;">
+        <div style="font-weight:800; font-size:20px; color:#38bdf8;">Edzy.</div>
+        <nav style="display:flex;gap:25px;align-items:center;">
+            <button id="themeToggleBtn" onclick="toggleTheme()" style="background:none; border:1px solid #475569; color:#fff; padding:6px 12px; border-radius:20px; cursor:pointer; font-size:14px;">🌙 Темна</button>
+            <span style="color:#475569;">|</span>
             <a href="./index.html" onclick="localStorage.removeItem('currentUser')" style="color:#94a3b8;text-decoration:none;font-size:16px;">Вихід</a>
             <a href="./contacts.html" style="color:#94a3b8;text-decoration:none;font-size:16px;">Контакти</a>
             <a href="./dashboard.html" style="color:#94a3b8;text-decoration:none;font-size:16px;">Журнал</a>
@@ -27,144 +53,243 @@
         </nav>
     </header>
 
-    <main style="flex:1;padding:60px 40px;box-sizing:border-box;max-width:1000px;width:100%;margin:0 auto;display:flex;flex-direction:column;gap:40px;">
+    <main style="flex:1;padding:40px;box-sizing:border-box;max-width:1000px;width:100%;margin:0 auto;display:flex;flex-direction:column;gap:35px;">
         
         <div>
-            <h1 style="font-size:36px;font-weight:800;margin:0 0 12px 0;line-height:1.2;">Панель адміністратора</h1>
-            <p style="color:#22c55e;font-size:16px;font-weight:bold;margin:0;">✓ Повний доступ до керування базою даних активовано.</p>
+            <h1 style="font-size:36px; font-weight:900; margin:0 0 10px 0; letter-spacing:-0.02em;">Панель адміністратора</h1>
+            <p style="color:#22c55e; margin:0; font-size:16px; font-weight:600;">✓ Повний доступ до керування базою даних активовано.</p>
         </div>
 
-        <div style="background:#1e293b;border:1px solid #334155;padding:35px;border-radius:12px;box-sizing:border-box;width:100%;">
-            <h3 style="margin-top:0;margin-bottom:25px;font-size:20px;color:#38bdf8;font-weight:700;">🎓 Виставлення оцінок</h3>
-            <form id="gradesForm" style="display:flex;flex-direction:column;gap:20px;">
-                <div style="display:grid;grid-template-columns: 1fr 1fr; gap:20px;">
-                    <div>
-                        <label style="display:block;font-size:14px;color:#94a3b8;margin-bottom:8px;">Студент</label>
-                        <select id="studentSelect" style="width:100%;background:#0f172a;border:1px solid #334155;padding:14px;border-radius:6px;color:#fff;">
-                            <option value="student1">Олексій Іванов (ПІ-23-1)</option>
-                            <option value="student2">Марія Петренко (ПІ-23-1)</option>
-                            <option value="student3">Дмитро Коваленко (ПІ-23-2)</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label style="display:block;font-size:14px;color:#94a3b8;margin-bottom:8px;">Модуль</label>
-                        <select id="moduleSelect" style="width:100%;background:#0f172a;border:1px solid #334155;padding:14px;border-radius:6px;color:#fff;">
-                            <option value="m1">Модуль 1. Git та GitHub</option>
-                            <option value="m2">Модуль 2. HTML5</option>
-                            <option value="m3">Модуль 3. CSS та Адаптивність</option>
-                            <option value="m4">Модуль 4. JavaScript</option>
-                        </select>
-                    </div>
-                </div>
-                <div style="display:grid;grid-template-columns:repeat(3, 1fr);gap:20px;">
-                    <input type="number" id="gradePrac" placeholder="Практичні (max 30)" required style="background:#0f172a;border:1px solid #334155;padding:14px;border-radius:6px;color:#fff;">
-                    <input type="number" id="gradeLab" placeholder="Лабораторні (max 40)" required style="background:#0f172a;border:1px solid #334155;padding:14px;border-radius:6px;color:#fff;">
-                    <input type="number" id="gradeTest" placeholder="Тести (max 30)" required style="background:#0f172a;border:1px solid #334155;padding:14px;border-radius:6px;color:#fff;">
-                </div>
-                <button type="submit" style="background:#22c55e;color:#fff;border:none;padding:15px;border-radius:6px;font-weight:bold;cursor:pointer;">Зберегти бали</button>
-            </form>
-        </div>
-
-        <div style="background:#1e293b;border:1px solid #334155;padding:35px;border-radius:12px;box-sizing:border-box;width:100%;">
-            <h3 style="margin-top:0;margin-bottom:25px;font-size:20px;color:#facc15;font-weight:700;">🗓️ Керування розкладом занять</h3>
-            <div style="display:flex;flex-direction:column;gap:20px;">
-                <div style="display:grid;grid-template-columns: 1fr 1fr 1fr; gap:15px;">
-                    <select id="schGroup" style="background:#0f172a;border:1px solid #334155;padding:12px;border-radius:6px;color:#fff;">
-                        <option value="ПІ-23-1">Група ПІ-23-1</option>
-                        <option value="ПІ-23-2">Група ПІ-23-2</option>
-                    </select>
-                    <select id="schDay" style="background:#0f172a;border:1px solid #334155;padding:12px;border-radius:6px;color:#fff;">
-                        <option>Понеділок</option><option>Вівторок</option><option>Середа</option><option>Четвер</option><option>П'ятниця</option>
-                    </select>
-                    <input type="text" id="schTime" placeholder="Час (напр. 08:30)" style="background:#0f172a;border:1px solid #334155;padding:12px;border-radius:6px;color:#fff;">
-                </div>
-                <div style="display:grid;grid-template-columns: 2fr 1fr; gap:15px;">
-                    <input type="text" id="schSubject" placeholder="Назва дисципліни" style="background:#0f172a;border:1px solid #334155;padding:12px;border-radius:6px;color:#fff;">
-                    <input type="text" id="schRoom" placeholder="Аудиторія / Zoom" style="background:#0f172a;border:1px solid #334155;padding:12px;border-radius:6px;color:#fff;">
-                </div>
-                <button onclick="addScheduleItem()" style="background:#facc15;color:#000;border:none;padding:15px;border-radius:6px;font-weight:bold;cursor:pointer;">Додати пару в розклад</button>
-            </div>
+        <div style="background:#1e293b; border:1px solid #334155; border-radius:12px; padding:30px; box-sizing:border-box;" class="admin-card">
+            <h3 style="margin-top:0; margin-bottom:25px; font-size:20px; color:#38bdf8; display:flex; align-items:center; gap:8px;">🎓 Виставлення оцінок</h3>
             
-            <div id="adminScheduleList" style="margin-top:25px; display:flex; flex-direction:column; gap:10px;">
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px; margin-bottom:25px;">
+                <div>
+                    <label style="display:block; color:#94a3b8; margin-bottom:8px; font-size:14px; font-weight:600;">Студент</label>
+                    <select id="studentSelect" style="width:100%; background:#0f172a; color:#fff; border:1px solid #334155; padding:12px; border-radius:8px; font-size:15px; outline:none;">
+                        <option value="student1">Олексій Іванов (ПІ-23-1)</option>
+                        <option value="student2">Марія Петренко (ПІ-23-1)</option>
+                        <option value="student3">Дмитро Коваленко (ПІ-23-2)</option>
+                    </select>
+                </div>
+                <div>
+                    <label style="display:block; color:#94a3b8; margin-bottom:8px; font-size:14px; font-weight:600;">Модуль</label>
+                    <select id="moduleSelect" style="width:100%; background:#0f172a; color:#fff; border:1px solid #334155; padding:12px; border-radius:8px; font-size:15px; outline:none;">
+                        </select>
+                </div>
+            </div>
+
+            <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:20px; margin-bottom:30px;">
+                <input type="number" id="gradePracticals" placeholder="Практичні (max 30)" min="0" max="30" style="width:100%; background:#0f172a; color:#fff; border:1px solid #334155; padding:12px; border-radius:8px; font-size:15px; box-sizing:border-box; outline:none;">
+                <input type="number" id="gradeLabs" placeholder="Лабораторні (max 40)" min="0" max="40" style="width:100%; background:#0f172a; color:#fff; border:1px solid #334155; padding:12px; border-radius:8px; font-size:15px; box-sizing:border-box; outline:none;">
+                <input type="number" id="gradeTests" placeholder="Тести (max 30)" min="0" max="30" style="width:100%; background:#0f172a; color:#fff; border:1px solid #334155; padding:12px; border-radius:8px; font-size:15px; box-sizing:border-box; outline:none;">
+            </div>
+
+            <button onclick="saveGrades()" style="width:100%; background:#22c55e; color:#0f172a; border:none; padding:14px; border-radius:8px; font-size:16px; font-weight:bold; cursor:pointer;">Зберегти бали</button>
+        </div>
+
+        <div style="background:#1e293b; border:1px solid #334155; border-radius:12px; padding:30px; box-sizing:border-box;" class="admin-card">
+            <h3 style="margin-top:0; margin-bottom:25px; font-size:20px; color:#facc15;">🗓️ Керування розкладом занять</h3>
+            
+            <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:20px; margin-bottom:20px;">
+                <select id="scheduleGroup" style="background:#0f172a; color:#fff; border:1px solid #334155; padding:12px; border-radius:8px; font-size:15px;"><option value="ПІ-23-1">Група ПІ-23-1</option><option value="ПІ-23-2">Група ПІ-23-2</option></select>
+                <select id="scheduleDay" style="background:#0f172a; color:#fff; border:1px solid #334155; padding:12px; border-radius:8px; font-size:15px;"><option value="Понеділок">Понеділок</option><option value="Вівторок">Вівторок</option><option value="Середа">Середа</option><option value="Четвер">Четвер</option><option value="П'ятниця">П'ятниця</option></select>
+                <input type="text" id="scheduleTime" placeholder="Час (напр. 08:30)" style="background:#0f172a; color:#fff; border:1px solid #334155; padding:12px; border-radius:8px; font-size:15px; box-sizing:border-box;">
+            </div>
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px; margin-bottom:25px;">
+                <input type="text" id="scheduleSubject" placeholder="Назва дисципліни" style="background:#0f172a; color:#fff; border:1px solid #334155; padding:12px; border-radius:8px; font-size:15px; box-sizing:border-box;">
+                <input type="text" id="scheduleRoom" placeholder="Аудиторія / Zoom" style="background:#0f172a; color:#fff; border:1px solid #334155; padding:12px; border-radius:8px; font-size:15px; box-sizing:border-box;">
+            </div>
+            <button onclick="alert('Розклад успішно оновлено (Демо)')" style="width:100%; background:#facc15; color:#0f172a; border:none; padding:14px; border-radius:8px; font-size:16px; font-weight:bold; cursor:pointer;">Додати пару в розклад</button>
+        </div>
+
+        <div style="background:#1e293b; border:1px solid #334155; border-radius:12px; padding:30px; box-sizing:border-box;" class="admin-card">
+            <h3 style="margin-top:0; margin-bottom:20px; font-size:20px; color:#a78bfa;">📝 Керування темами модулів</h3>
+            
+            <div style="display:flex; gap:15px; margin-bottom:25px;">
+                <input type="text" id="newTopicTitle" placeholder="Назва нової теми..." style="flex:1; background:#0f172a; color:#fff; border:1px solid #334155; padding:12px; border-radius:8px; font-size:15px; box-sizing:border-box; outline:none;">
+                <button onclick="addNewTopic()" style="background:#a78bfa; color:#0f172a; border:none; padding:0 30px; border-radius:8px; font-size:15px; font-weight:bold; cursor:pointer;">Зберегти</button>
+            </div>
+
+            <h4 style="margin-top:0; margin-bottom:12px; font-size:14px; color:#94a3b8; text-transform:uppercase; letter-spacing:0.05em;">Поточні теми в системі:</h4>
+            <div id="adminTopicsList" style="display:flex; flex-direction:column; gap:10px;">
                 </div>
         </div>
 
-        <div style="background:#1e293b;border:1px solid #334155;padding:35px;border-radius:12px;box-sizing:border-box;width:100%;">
-            <h3 style="margin-top:0;margin-bottom:25px;font-size:20px;color:#a78bfa;font-weight:700;">+ Додати тему модуля</h3>
-            <form style="display:flex;gap:15px;">
-                <input type="text" placeholder="Назва теми..." style="flex:1;background:#0f172a;border:1px solid #334155;padding:14px;border-radius:6px;color:#fff;">
-                <button type="button" style="background:#38bdf8;color:#0f172a;border:none;padding:0 25px;border-radius:6px;font-weight:bold;">Зберегти</button>
-            </form>
+        <div style="background:#1e293b; border:1px solid #334155; border-radius:12px; padding:30px; box-sizing:border-box;" class="admin-card">
+            <h3 style="margin-top:0; margin-bottom:20px; font-size:20px; color:#f87171;">📥 Роботи, що очікують перевірки</h3>
+            <div id="adminWorksQueue" style="display:flex; flex-direction:column; gap:12px;">
+                </div>
         </div>
 
-        <div style="width:100%;">
-            <h3 style="font-size:22px;font-weight:700;margin:0 0 20px 0;border-bottom:1px solid #334155;padding-bottom:12px;">📬 Повідомлення від студентів</h3>
-            <div style="background:#1e293b;border:1px solid #334155;padding:25px;border-radius:8px;text-align:center;">
-                <p style="color:#94a3b8;font-size:16px;margin:0;font-style:italic;">Повідомлень немає</p>
-            </div>
-        </div>
     </main>
 
+    <footer style="background:#1e293b;padding:20px;text-align:center;font-size:14px;color:#64748b;border-top:1px solid #334155;box-sizing:border-box;width:100%;">
+        &copy; 2026 Edzy. Панель викладача.
+    </footer>
+
     <script>
-        // ЛОГІКА ОЦІНОК
-        document.getElementById('gradesForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const student = document.getElementById('studentSelect').value;
-            const module = document.getElementById('moduleSelect').value;
-            const prac = document.getElementById('gradePrac').value;
-            const lab = document.getElementById('gradeLab').value;
-            const test = document.getElementById('gradeTest').value;
-            localStorage.setItem(`grades_${student}_${module}`, JSON.stringify({prac, lab, test}));
-            alert('Оцінки збережено!');
-        });
+        // Захист входу
+        (function enforceSecurity() {
+            const userRole = localStorage.getItem('currentUser');
+            if (!userRole || userRole !== 'admin') window.location.href = './index.html';
+        })();
 
-        // ЛОГІКА РОЗКЛАДУ
-        function addScheduleItem() {
-            const group = document.getElementById('schGroup').value;
-            const item = {
-                id: Date.now(),
-                day: document.getElementById('schDay').value,
-                time: document.getElementById('schTime').value,
-                subject: document.getElementById('schSubject').value,
-                room: document.getElementById('schRoom').value
-            };
-            
-            let schedule = JSON.parse(localStorage.getItem(`schedule_${group}`)) || [];
-            schedule.push(item);
-            localStorage.setItem(`schedule_${group}`, JSON.stringify(schedule));
-            
-            document.getElementById('schTime').value = '';
-            document.getElementById('schSubject').value = '';
-            document.getElementById('schRoom').value = '';
-            
-            renderAdminSchedule();
+        const defaultTopics = [
+            { id: 1, title: "Модуль 1. Основи роботи з Git та GitHub" },
+            { id: 2, title: "Модуль 2. Структура проєкту та HTML5" },
+            { id: 3, title: "Модуль 3. Стилізація CSS та адаптивність" },
+            { id: 4, title: "Модуль 4. Динамічний рендер через JavaScript" }
+        ];
+
+        function getTopicsDB() {
+            let topics = localStorage.getItem('customTopicsDB');
+            if (!topics) { localStorage.setItem('customTopicsDB', JSON.stringify(defaultTopics)); return defaultTopics; }
+            return JSON.parse(topics);
         }
 
-        function deleteScheduleItem(group, id) {
-            let schedule = JSON.parse(localStorage.getItem(`schedule_${group}`));
-            schedule = schedule.filter(i => i.id !== id);
-            localStorage.setItem(`schedule_${group}`, JSON.stringify(schedule));
-            renderAdminSchedule();
-        }
+        // РЕНДЕР МОДУЛІВ
+        function renderAdminTopicsList() {
+            const container = document.getElementById('adminTopicsList');
+            const moduleSelect = document.getElementById('moduleSelect');
+            const topics = getTopicsDB();
 
-        function renderAdminSchedule() {
-            const group = document.getElementById('schGroup').value;
-            const list = document.getElementById('adminScheduleList');
-            const schedule = JSON.parse(localStorage.getItem(`schedule_${group}`)) || [];
-            
-            list.innerHTML = `<h4 style="margin:10px 0; color:#94a3b8;">Поточні пари для ${group}:</h4>`;
-            schedule.forEach(i => {
-                list.innerHTML += `
-                    <div style="background:#0f172a; padding:12px 20px; border-radius:8px; display:flex; justify-content:space-between; align-items:center;">
-                        <span><b>${i.day} (${i.time})</b>: ${i.subject} - каб. ${i.room}</span>
-                        <button onclick="deleteScheduleItem('${group}', ${i.id})" style="background:#7f1d1d; color:#f87171; border:none; padding:5px 12px; border-radius:4px; cursor:pointer;">Видалити</button>
+            container.innerHTML = '';
+            moduleSelect.innerHTML = '';
+
+            if (topics.length === 0) {
+                container.innerHTML = '<p style="color:#64748b; font-style:italic; margin:0;">Теми відсутні.</p>';
+                moduleSelect.innerHTML = '<option value="">Немає доступних модулів</option>';
+                return;
+            }
+
+            topics.forEach((topic, index) => {
+                container.innerHTML += `
+                    <div style="background:#0f172a; padding:12px 15px; border-radius:8px; display:flex; justify-content:space-between; align-items:center; border-left:3px solid #a78bfa;" class="bg-dark-box">
+                        <span style="font-size:14px; font-weight:600; color:#fff;" class="text-white-fix">${topic.title}</span>
+                        <button onclick="deleteTopicByIndex(${index})" style="background:rgba(239, 68, 68, 0.1); color:#ef4444; border:1px solid rgba(239, 68, 68, 0.4); padding:6px 12px; border-radius:6px; font-size:12px; font-weight:bold; cursor:pointer;">Видалити ❌</button>
                     </div>
                 `;
+                moduleSelect.innerHTML += `<option value="${index}">${topic.title}</option>`;
             });
         }
 
-        document.getElementById('schGroup').addEventListener('change', renderAdminSchedule);
-        window.onload = renderAdminSchedule;
+        function addNewTopic() {
+            const input = document.getElementById('newTopicTitle');
+            const title = input.value.trim();
+            if (!title) { alert('Введіть назву!'); return; }
+
+            let topics = getTopicsDB();
+            topics.push({ id: topics.length > 0 ? topics[topics.length - 1].id + 1 : 1, title: title });
+            localStorage.setItem('customTopicsDB', JSON.stringify(topics));
+            input.value = '';
+            alert('Тему додано!');
+            renderAdminTopicsList();
+        }
+
+        function deleteTopicByIndex(index) {
+            if (confirm('Видалити цю тему?')) {
+                let topics = getTopicsDB();
+                topics.splice(index, 1);
+                localStorage.setItem('customTopicsDB', JSON.stringify(topics));
+                renderAdminTopicsList();
+                renderSubmittedWorksQueue();
+            }
+        }
+
+        // ЧЕРГА ПЕРЕВІРКИ РОБІТ СТУДЕНТІВ
+        function renderSubmittedWorksQueue() {
+            const queueContainer = document.getElementById('adminWorksQueue');
+            if (!queueContainer) return;
+
+            let mockDatabase = JSON.parse(localStorage.getItem('academicGradesDB')) || {
+                'student1': { name: 'Олексій Іванов', group: 'ПІ-23-1', grades: [95, 88, 97, 0], submittedLinks: ["","","",""] },
+                'student2': { name: 'Марія  Петренко', group: 'ПІ-23-1', grades: [90, 92, 85, 95], submittedLinks: ["","","",""] },
+                'student3': { name: 'Дмитро Коваленко', group: 'ПІ-23-2', grades: [75, 80, 70, 65], submittedLinks: ["","","",""] }
+            };
+
+            const topics = getTopicsDB();
+            queueContainer.innerHTML = '';
+            let hasWorks = false;
+
+            Object.keys(mockDatabase).forEach(studentKey => {
+                const student = mockDatabase[studentKey];
+                if (student.submittedLinks) {
+                    student.submittedLinks.forEach((link, moduleIndex) => {
+                        if (link && (student.grades[moduleIndex] === 0 || !student.grades[moduleIndex])) {
+                            hasWorks = true;
+                            const moduleTitle = topics[moduleIndex] ? topics[moduleIndex].title : `Модуль ${moduleIndex + 1}`;
+                            
+                            queueContainer.innerHTML += `
+                                <div style="background:#0f172a; padding:15px; border-radius:8px; border:1px solid #273549; display:flex; justify-content:space-between; align-items:center;">
+                                    <div>
+                                        <strong style="color:#fff;">👤 ${student.name} (${student.group})</strong>
+                                        <div style="color:#94a3b8; font-size:13px; margin-top:4px;">🎯 Модуль: ${moduleTitle}</div>
+                                        <div style="margin-top:6px;"><a href="${link}" target="_blank" style="color:#38bdf8; text-decoration:underline; font-size:14px; font-weight:600;">🔗 Відкрити лабораторну (GitHub / Диск)</a></div>
+                                    </div>
+                                    <div style="text-align:right;">
+                                        <span style="display:block; color:#facc15; font-weight:bold; font-size:13px; margin-bottom:4px;">Очікує перевірки</span>
+                                        <em style="font-style:normal; color:#84cc16; font-size:12px;">Виставте бали у формі вище 👆</em>
+                                    </div>
+                                </div>
+                            `;
+                        }
+                    });
+                }
+            });
+
+            if (!hasWorks) {
+                queueContainer.innerHTML = `
+                    <div style="background:#0f172a; padding:20px; border-radius:8px; text-align:center; color:#64748b; font-style:italic; border:1px solid #273549;" class="bg-dark-box">
+                        Всі роботи перевірено. Черга порожня!
+                    </div>
+                `;
+            }
+        }
+
+        // ЗБЕРЕЖЕННЯ ОЦІНОК
+        function saveGrades() {
+            const studentId = document.getElementById('studentSelect').value;
+            const moduleIndex = parseInt(document.getElementById('moduleSelect').value);
+            
+            const practicals = parseInt(document.getElementById('gradePracticals').value) || 0;
+            const labs = parseInt(document.getElementById('gradeLabs').value) || 0;
+            const tests = parseInt(document.getElementById('gradeTests').value) || 0;
+
+            const total = Math.min(100, practicals + labs + tests);
+
+            let mockDatabase = JSON.parse(localStorage.getItem('academicGradesDB'));
+
+            if(isNaN(moduleIndex)) { alert('Оберіть модуль!'); return; }
+
+            mockDatabase[studentId].grades[moduleIndex] = total;
+            localStorage.setItem('academicGradesDB', JSON.stringify(mockDatabase));
+
+            document.getElementById('gradePracticals').value = '';
+            document.getElementById('gradeLabs').value = '';
+            document.getElementById('gradeTests').value = '';
+
+            alert('Оцінки зафіксовано!');
+            renderSubmittedWorksQueue(); 
+        }
+
+        function applySavedTheme() {
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            const btn = document.getElementById('themeToggleBtn');
+            if (savedTheme === 'light') { document.body.classList.add('light-theme'); btn.innerHTML = '☀️ Світла'; }
+            else { document.body.classList.remove('light-theme'); btn.innerHTML = '🌙 Темна'; }
+        }
+
+        function toggleTheme() {
+            document.body.classList.contains('light-theme') ? localStorage.setItem('theme', 'dark') : localStorage.setItem('theme', 'light');
+            applySavedTheme();
+        }
+
+        window.onload = function() {
+            applySavedTheme();
+            renderAdminTopicsList();
+            renderSubmittedWorksQueue();
+        };
     </script>
 </body>
 </html>

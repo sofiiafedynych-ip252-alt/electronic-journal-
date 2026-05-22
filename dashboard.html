@@ -3,12 +3,67 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edzy - Мій розклад</title>
+    <title>Edzy - Журнал та Розклад</title>
+    <style>
+        /* Стилі для світлої теми, які активуються через клас .light-theme */
+        body.light-theme {
+            background: #f8fafc !important;
+            color: #0f172a !important;
+        }
+        body.light-theme header, 
+        body.light-theme footer {
+            background: #ffffff !important;
+            border-color: #cbd5e1 !important;
+        }
+        body.light-theme nav a {
+            color: #64748b !important;
+        }
+        body.light-theme nav a[style*="font-weight:bold"] {
+            color: #0284c7 !important;
+        }
+        body.light-theme #scheduleGrid > div,
+        body.light-theme #topicsContainer > div {
+            background: #ffffff !important;
+            border-color: #cbd5e1 !important;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05) !important;
+        }
+        body.light-theme #scheduleGrid > div > div:first-child {
+            background: #f1f5f9 !important;
+            color: #0284c7 !important;
+        }
+        body.light-theme #scheduleGrid  div[style*="background:#0f172a"] {
+            background: #f8fafc !important;
+            border-color: #e2e8f0 !important;
+        }
+        body.light-theme #scheduleGrid  div[style*="color:#fff"] {
+            color: #0f172a !important;
+        }
+        body.light-theme #topicsContainer h4 {
+            color: #0f172a !important;
+        }
+        body.light-theme #topicsContainer a {
+            background: #f1f5f9 !important;
+            color: #0f172a !important;
+            border-color: #cbd5e1 !important;
+        }
+        body.light-theme #topicsContainer a:hover {
+            background: #e2e8f0 !important;
+        }
+        body.light-theme hr {
+            border-color: #cbd5e1 !important;
+        }
+    </style>
 </head>
 <body style="background:#0f172a;color:#fff;font-family:sans-serif;margin:0;min-height:100vh;display:flex;flex-direction:column;">
 
-    <header style="background:#1e293b;padding:15px 40px;display:flex;justify-content:flex-end;align-items:center;border-bottom:1px solid #334155;box-sizing:border-box;width:100%;">
-        <nav style="display:flex;gap:30px;align-items:center;">
+    <header style="background:#1e293b;padding:15px 40px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #334155;box-sizing:border-box;width:100%;">
+        <div style="font-weight:800; font-size:20px; color:#38bdf8;">Edzy.</div>
+        
+        <nav style="display:flex;gap:25px;align-items:center;">
+            <button id="themeToggleBtn" onclick="toggleTheme()" style="background:none; border:1px solid #475569; color:#fff; padding:6px 12px; border-radius:20px; cursor:pointer; font-size:14px; display:flex; align-items:center; gap:6px; transition: all 0.2s;">
+                🌙 Темна
+            </button>
+            <span style="color:#475569;">|</span>
             <a href="./index.html" onclick="localStorage.removeItem('currentUser')" style="color:#94a3b8;text-decoration:none;font-size:16px;">Вихід</a>
             <a href="./contacts.html" style="color:#94a3b8;text-decoration:none;font-size:16px;">Контакти</a>
             <a href="./dashboard.html" style="color:#38bdf8;text-decoration:none;font-size:16px;font-weight:bold;">Журнал</a>
@@ -17,81 +72,178 @@
         </nav>
     </header>
 
-    <main style="flex:1;padding:60px 40px;box-sizing:border-box;max-width:1100px;width:100%;margin:0 auto;display:flex;flex-direction:column;gap:30px;">
+    <main style="flex:1;padding:60px 40px;box-sizing:border-box;max-width:1100px;width:100%;margin:0 auto;display:flex;flex-direction:column;gap:50px;">
         
-        <div style="border-left:4px solid #facc15; padding-left:20px;">
-            <h1 style="font-size:32px; font-weight:800; margin:0;">🗓️ Розклад занять</h1>
-            <p style="color:#94a3b8; margin:10px 0 0 0;">Група: <span id="groupLabel" style="color:#facc15; font-weight:bold;">Визначаємо...</span></p>
+        <div>
+            <div style="border-left:4px solid #38bdf8; padding-left:20px; margin-bottom:25px;">
+                <h1 style="font-size:32px; font-weight:800; margin:0; line-height:1.2;">📅 Розклад занять</h1>
+                <p style="color:#94a3b8; margin:10px 0 0 0; font-size:16px;">
+                    Поточна група: <span id="groupLabel" style="color:#38bdf8; font-weight:bold;">Визначення...</span>
+                </p>
+            </div>
+            
+            <div id="scheduleGrid" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap:25px; width:100%;">
+                </div>
         </div>
 
-        <div id="scheduleContainer" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap:25px; margin-top:20px;">
+        <hr style="border:0; border-top:1px solid #334155; margin:0;">
+
+        <div>
+            <div style="border-left:4px solid #a78bfa; padding-left:20px; margin-bottom:25px;">
+                <h2 style="font-size:28px; font-weight:800; margin:0; line-height:1.2;">📚 Навчальні теми та завдання</h2>
+                <p style="color:#94a3b8; margin:5px 0 0 0; font-size:16px;">Ваш прогрес за тематичними модулями курсу</p>
             </div>
 
-        <div id="emptyMessage" style="display:none; text-align:center; padding:100px; background:#1e293b; border-radius:15px; border:2px dashed #334155;">
-            <p style="color:#64748b; font-size:18px;">Розклад для вашої групи ще не завантажено викладачем.</p>
+            <div id="topicsContainer" style="display:flex; flex-direction:column; gap:20px; width:100%;">
+                </div>
         </div>
+
     </main>
 
     <footer style="background:#1e293b;padding:20px;text-align:center;font-size:14px;color:#64748b;border-top:1px solid #334155;box-sizing:border-box;width:100%;">
-        &copy; 2026 Edzy. Всі права захищені.
+        &copy; 2026 Edzy. Проєкт електронного журналу. Всі права захищені.
     </footer>
 
     <script>
-        // Словник груп
-        const studentGroups = {
+        const scheduleData = {
+            "ПІ-23-1": [
+                { day: "Понеділок", time: "08:30 - 09:50", subject: "💻 Веб-технології (Лекція)", room: "Zoom" },
+                { day: "Понеділок", time: "10:00 - 11:20", subject: "🛠️ Веб-технології (Лабораторна)", room: "лаб. 402" },
+                { day: "Вівторок", time: "11:40 - 13:00", subject: "🗄️ Бази даних (Лекція)", room: "ауд. 215" },
+                { day: "Середа", time: "10:00 - 11:20", subject: "🇬🇧 Англійська мова (Практична)", room: "ауд. 105" },
+                { day: "Четвер", time: "08:30 - 09:50", subject: "🧠 Дискретна математика (Лекція)", room: "ауд. 301" },
+                { day: "П'ятниця", time: "13:20 - 14:40", subject: "🎨 UX/UI Дизайн (Практична)", room: "Zoom" }
+            ],
+            "ПІ-23-2": [
+                { day: "Понеділок", time: "10:00 - 11:20", subject: "🧠 Дискретна математика (Лекція)", room: "ауд. 301" },
+                { day: "Вівторок", time: "08:30 - 09:50", subject: "🎨 UX/UI Дизайн (Лекція)", room: "Zoom" },
+                { day: "Середа", time: "11:40 - 13:00", subject: "💻 Веб-технології (Лекція)", room: "Zoom" },
+                { day: "Середа", time: "13:20 - 14:40", subject: "🛠️ Веб-технології (Лабораторна)", room: "лаб. 402" },
+                { day: "Четвер", time: "10:00 - 11:20", subject: "🗄️ Бази даних (Практична)", room: "ауд. 218" },
+                { day: "П'ятниця", time: "08:30 - 09:50", subject: "🇬🇧 Англійська мова (Практична)", room: "ауд. 102" }
+            ]
+        };
+
+        const studentProfiles = {
             'student1': 'ПІ-23-1',
             'student2': 'ПІ-23-1',
             'student3': 'ПІ-23-2'
         };
 
-        function renderStudentSchedule() {
+        // --- ЛОГІКА ПЕРЕМИКАННЯ ТЕМ ---
+        function applySavedTheme() {
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            const btn = document.getElementById('themeToggleBtn');
+            
+            if (savedTheme === 'light') {
+                document.body.classList.add('light-theme');
+                btn.innerHTML = '☀️ Світла';
+                btn.style.color = '#0f172a';
+                btn.style.borderColor = '#cbd5e1';
+            } else {
+                document.body.classList.remove('light-theme');
+                btn.innerHTML = '🌙 Темна';
+                btn.style.color = '#fff';
+                btn.style.borderColor = '#475569';
+            }
+        }
+
+        function toggleTheme() {
+            if (document.body.classList.contains('light-theme')) {
+                localStorage.setItem('theme', 'dark');
+            } else {
+                localStorage.setItem('theme', 'light');
+            }
+            applySavedTheme(); // Перемальовуємо
+        }
+
+        // Ініціалізація сторінки
+        function initDashboard() {
+            applySavedTheme(); // Спочатку налаштовуємо тему
+
             const user = localStorage.getItem('currentUser');
             if (!user) { window.location.href = './index.html'; return; }
             if (user === 'admin') document.getElementById('adminLink').style.display = 'block';
 
-            const group = studentGroups[user] || 'ПІ-23-1';
-            document.getElementById('groupLabel').innerText = group;
+            const scheduleGrid = document.getElementById('scheduleGrid');
+            scheduleGrid.innerHTML = '';
 
-            const schedule = JSON.parse(localStorage.getItem(`schedule_${group}`)) || [];
-            const container = document.getElementById('scheduleContainer');
-            
-            if (schedule.length === 0) {
-                document.getElementById('emptyMessage').style.display = 'block';
-                return;
+            if (user === 'admin') {
+                document.getElementById('groupLabel').innerText = "Всі групи (Режим викладача)";
+                renderScheduleCards("ПІ-23-1", scheduleData["ПІ-23-1"]);
+                renderScheduleCards("ПІ-23-2", scheduleData["ПІ-23-2"]);
+            } else {
+                const userGroup = studentProfiles[user] || 'ПІ-23-1';
+                document.getElementById('groupLabel').innerText = `Група ${userGroup}`;
+                renderScheduleCards(userGroup, scheduleData[userGroup]);
             }
 
-            // Групуємо по днях
-            const days = ["Понеділок", "Вівторок", "Середа", "Четвер", "П'ятниця"];
-            container.innerHTML = '';
+            loadLearningTopics();
+        }
 
-            days.forEach(day => {
-                const dayClasses = schedule.filter(i => i.day === day);
+        function renderScheduleCards(groupName, classes) {
+            const grid = document.getElementById('scheduleGrid');
+            const daysOrder = ["Понеділок", "Вівторок", "Середа", "Четвер", "П'ятниця"];
+
+            daysOrder.forEach(day => {
+                const dayClasses = classes.filter(c => c.day === day);
                 if (dayClasses.length > 0) {
-                    let dayHtml = `
-                        <div style="background:#1e293b; border:1px solid #334155; border-radius:12px; overflow:hidden;">
-                            <div style="background:#334155; padding:15px 20px; font-weight:bold; color:#facc15; font-size:18px;">${day}</div>
-                            <div style="padding:10px;">
+                    let cardHtml = `
+                        <div style="background:#1e293b; border:1px solid #334155; border-radius:12px; overflow:hidden; transition: all 0.3s;">
+                            <div style="background:#273549; padding:12px 20px; font-weight:bold; color:#38bdf8; font-size:16px; display:flex; justify-content:space-between; align-items:center;">
+                                <span>📅 ${day}</span>
+                                <span style="font-size:11px; background:#0f172a; padding:3px 6px; border-radius:4px; color:#94a3b8;">${groupName}</span>
+                            </div>
+                            <div style="padding:10px; display:flex; flex-direction:column; gap:8px;">
                     `;
-
-                    dayClasses.sort((a,b) => a.time.localeCompare(b.time)).forEach(c => {
-                        dayHtml += `
-                            <div style="padding:15px; border-bottom:1px solid #2d3748; display:flex; flex-direction:column; gap:5px;">
-                                <div style="display:flex; justify-content:space-between; align-items:center;">
-                                    <span style="color:#38bdf8; font-weight:bold; font-size:14px;">${c.time}</span>
-                                    <span style="background:#0f172a; padding:2px 8px; border-radius:4px; font-size:12px; color:#94a3b8;">каб. ${c.room}</span>
+                    dayClasses.forEach(c => {
+                        cardHtml += `
+                            <div style="background:#0f172a; padding:12px; border-radius:8px; border-left:3px solid #facc15;">
+                                <div style="display:flex; justify-content:space-between; margin-bottom:4px; font-size:12px;">
+                                    <span style="color:#94a3b8; font-weight:600;">⏰ ${c.time}</span>
+                                    <span style="color:#f87171; font-weight:600;">📍 ${c.room}</span>
                                 </div>
-                                <div style="font-size:16px; font-weight:bold;">${c.subject}</div>
+                                <div style="font-size:14px; font-weight:700; color:#fff;">${c.subject}</div>
                             </div>
                         `;
                     });
-
-                    dayHtml += `</div></div>`;
-                    container.innerHTML += dayHtml;
+                    cardHtml += `</div></div>`;
+                    grid.innerHTML += cardHtml;
                 }
             });
         }
 
-        window.onload = renderStudentSchedule;
+        function loadLearningTopics() {
+            const container = document.getElementById('topicsContainer');
+            fetch('./public/data/topics.json')
+                .then(response => response.json())
+                .then(topics => {
+                    container.innerHTML = '';
+                    if(topics.length === 0) {
+                        container.innerHTML = '<p style="color:#64748b; font-style:italic;">Завдань не знайдено.</p>';
+                        return;
+                    }
+                    topics.forEach(topic => {
+                        container.innerHTML += `
+                            <div style="background:#1e293b; border:1px solid #334155; padding:25px; border-radius:12px; display:flex; justify-content:space-between; align-items:center; box-sizing:border-box; width:100%; transition: all 0.3s;">
+                                <div style="display:flex; flex-direction:column; gap:8px;">
+                                    <span style="color:#a78bfa; font-size:13px; font-weight:bold; letter-spacing:0.05em; text-transform:uppercase;">Тематичний модуль ${topic.id}</span>
+                                    <h4 style="margin:0; font-size:18px; font-weight:700; color:#fff;">${topic.title}</h4>
+                                    <p style="margin:0; color:#94a3b8; font-size:14px;">${topic.description || 'Ознайомтеся з теоретичним матеріалом та виконайте роботи.'}</p>
+                                </div>
+                                <a href="./topic-detail.html?id=${topic.id}" style="background:#334155; color:#fff; text-decoration:none; padding:12px 20px; border-radius:6px; font-size:14px; font-weight:bold; border:1px solid #475569; white-space:nowrap;">
+                                    Відкрити завдання →
+                                </a>
+                            </div>
+                        `;
+                    });
+                })
+                .catch(() => {
+                    container.innerHTML = '<div style="color:#94a3b8;">⚠️ Помилка завантаження тем.</div>';
+                });
+        }
+
+        window.onload = initDashboard;
     </script>
 </body>
 </html>
